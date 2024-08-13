@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="include\libEngine\libEngine.cpp" />
+    <ClCompile Include="include\libEngine\shared\CameraBuffer.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\shared\MeshBufferBase.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\shared\ShaderBufferBase.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\opengl\glMeshBuffer.cpp">
+      <Filter>opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\opengl\glShaderBuffer.cpp">
+      <Filter>opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\shared\RendererBase.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\opengl\glRenderer.cpp">
+      <Filter>opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\utils\toybox.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\Workspace.cpp" />
+    <ClCompile Include="include\libEngine\shared\Mesh.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\shared\Vertex.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\opengl\glMesh.cpp">
+      <Filter>opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\dx11\dxMesh.cpp">
+      <Filter>dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\dx11\dxMeshBuffer.cpp">
+      <Filter>dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\dx11\dxRenderer.cpp">
+      <Filter>dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\dx11\dxShaderBuffer.cpp">
+      <Filter>dx11</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\libEngine\libEngine.h" />
+    <ClInclude Include="include\libEngine\shared\CameraBuffer.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\shared\MeshBufferBase.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\shared\ShaderBufferBase.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\shared\Mesh.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\shared\Vertex.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\utils\macro.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\utils\eigen.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\opengl\glMeshBuffer.h">
+      <Filter>opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\opengl\glShaderBuffer.h">
+      <Filter>opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\shared\RendererBase.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\opengl\glRenderer.h">
+      <Filter>opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\utils\toybox.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\Workspace.h" />
+    <ClInclude Include="include\libEngine\opengl\glMesh.h">
+      <Filter>opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\dx11\dxMesh.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\dx11\dxMeshBuffer.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\dx11\dxRenderer.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\dx11\dxShaderBuffer.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\dx11\dxConstantBuffer.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\model\PixelShaderModel.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\model\VertexShaderModel.h">
+      <Filter>model</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="dx11">
+      <UniqueIdentifier>{3f6e6640-7a9a-4e39-8652-9de242cc8cad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="opengl">
+      <UniqueIdentifier>{4fd97eae-b1a9-4b4b-9508-a923ef9a84e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vulkan">
+      <UniqueIdentifier>{31e59f46-3faf-43ba-9e75-0343d893d81e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared">
+      <UniqueIdentifier>{4f8776db-e146-4d7a-a436-857568c0c186}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{324183fa-2cf8-447d-bf48-f9ff4663f628}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="model">
+      <UniqueIdentifier>{de66fd5f-9c2a-4f75-aa8d-0b13d61eab38}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\libEngine\dx11\dxConstantBuffer.tpp">
+      <Filter>dx11</Filter>
+    </None>
+  </ItemGroup>
+</Project>
