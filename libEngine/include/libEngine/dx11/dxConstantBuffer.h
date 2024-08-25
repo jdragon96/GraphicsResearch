@@ -7,6 +7,7 @@
 
 #include "libEngine/dx11/dxRenderer.h"
 #include "libEngine/utils/macro.h"
+#include "libEngine/shared/ConstantBuffer.h"
 
 #include <algorithm>
 #include <iostream>
@@ -15,27 +16,18 @@
 
 namespace libEngine
 {
-enum class ConstantBufferType
-{
-  PIXEL,
-  VERTEX,
-  GEOMETRY
-};
-
 template <typename T>
-class dxConstantBuffer
+class dxConstantBuffer : public ConstantBuffer<T>
 {
 public:
   SHARED_PTR(dxConstantBuffer);
 
   dxConstantBuffer();
 
-  void Initialize(ConstantBufferType type);
+  virtual void Initialize(ShaderType type) override;
 
-  void Update();
+  virtual void Update() override;
 
-  ConstantBufferType                   m_buffuerType;
-  T                                    data;
   Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
 };
 }  // namespace libEngine

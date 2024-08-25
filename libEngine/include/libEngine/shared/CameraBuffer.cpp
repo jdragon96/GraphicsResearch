@@ -1,4 +1,5 @@
 #include "libEngine/shared/CameraBuffer.h"
+#include <iostream>
 
 namespace libEngine
 {
@@ -39,7 +40,8 @@ CameraBuffer::~CameraBuffer()
 
 void CameraBuffer::SetOption(CameraOption opt)
 {
-  m_option = opt;
+  m_option      = opt;
+  m_sensitivity = opt.sensitivity;
   SetPersepctive(m_option.fovy, m_option.aspect, m_option.zNear, m_option.zFar);
   SetView(m_option.cam, m_option.target, m_option.up);
 }
@@ -106,7 +108,36 @@ void CameraBuffer::UpdateOrbit(float deltaX, float deltaY)
   m_viewMatrix = EigenUtils::LookAtRH(m_camPosition, m_targetPosition, m_upVector);
 }
 
-void CameraBuffer::UpdateZoom(float deltaZoom)
+void CameraBuffer::UpdateZoom(bool zoom)
 {
+  if (m_distance < 0.02)
+  {
+    m_distance = 0.02;
+    return;
+  }
+
+  if (zoom)
+    m_distance += (m_distance * 0.02);
+  else
+    m_distance -= (m_distance * 0.02);
+  m_camPosition = m_targetPosition + m_frontVector * m_distance;
+  m_viewMatrix  = EigenUtils::LookAtRH(m_camPosition, m_targetPosition, m_upVector);
+}
+void CameraBuffer::UpdateTranslate(float deltaX, float deltaY)
+{
+  auto moveDistance = m_distance * 0.01;
+  if (abs(deltaX) > 0.f)
+  {
+    auto translateX = (deltaX / abs(deltaX) * moveDistance) * m_rightVector;
+    m_camPosition += translateX;
+    m_targetPosition += translateX;
+  }
+  if (abs(deltaY) > 0.f)
+  {
+    auto translateY = (deltaY / abs(deltaY) * moveDistance) * m_upVector;
+    m_camPosition += translateY;
+    m_targetPosition += translateY;
+  }
+  m_viewMatrix = EigenUtils::LookAtRH(m_camPosition, m_targetPosition, m_upVector);
 }
 }  // namespace libEngine

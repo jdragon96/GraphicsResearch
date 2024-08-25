@@ -11,5 +11,9 @@ public:
   Mat4 view;
   Mat4 projection;
   Mat4 invTranspose;
+
+  VertexShaderModel()
+  {
+  }
 };
 }  // namespace libEngine

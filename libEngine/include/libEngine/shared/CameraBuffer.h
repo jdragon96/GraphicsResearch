@@ -58,7 +58,9 @@ public:
 
   virtual void UpdateOrbit(float deltaX, float deltaY);
 
-  virtual void UpdateZoom(float deltaZoom);
+  virtual void UpdateZoom(bool zoom);
+
+  virtual void UpdateTranslate(float deltaX, float deltaY);
 
 protected:
   CameraOption m_option;

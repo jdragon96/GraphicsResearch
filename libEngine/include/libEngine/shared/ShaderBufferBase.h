@@ -4,11 +4,20 @@
 #include <string>
 #include <unordered_map>
 #include <exception>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
+#include "libEngine/model/VertexShaderModel.h"
+#include "libEngine/model/PixelShaderModel.h"
+#include "libEngine/model/GeometryShaderModel.h"
 #include "libEngine/utils/macro.h"
+#include "libEngine/shared/ConstantBuffer.h"
 
 namespace libEngine
 {
+
+template <typename VTX_C = VertexShaderModel, typename PXL_C = PixelShaderModel, typename GEOM_C = GeometryShaderModel>
 class ShaderBufferBase
 {
 public:
@@ -17,21 +26,45 @@ public:
   ShaderBufferBase();
   ~ShaderBufferBase();
 
-  void SetVertexShader(std::string path);
-  void SetPixelShader(std::string path);
-  void initialize();
+  void SetShaderPath(ShaderType, std::string path);
+  void SetShaderCode(ShaderType, std::string code);
 
-  virtual void UpdateMat4(std::string name, Mat4* data) = 0;
-  virtual void UpdateVec3(std::string name, Vec3* data) = 0;
-  virtual void UpdateVec4(std::string name, Vec4* data) = 0;
-  virtual void Bound()                                  = 0;
+  // 셰이더 리소스(파일) 유효성 검토
+  virtual void Initialize();
+  virtual void Bound()   = 0;
+  virtual void Unbound() = 0;
+
+  ConstantBuffer<VTX_C>::SharedPtr  vertexConstBuffer;
+  ConstantBuffer<PXL_C>::SharedPtr  pixelConstBuffer;
+  ConstantBuffer<GEOM_C>::SharedPtr geometryConstBuffer;
 
 protected:
-  virtual void InitBuffers() = 0;
-  void         ValidationCheck();
-  std::string  MakeExceptionMsg(std::string type, std::string fileName);
+  // GPU 메모리 할당
+  virtual void InitVertexConstBuffer()         = 0;
+  virtual void InitPixelConstBuffer()          = 0;
+  virtual void InitGeometryConstBuffer()       = 0;
+  virtual void InitVertexShader(std::string)   = 0;
+  virtual void InitPixelShader(std::string)    = 0;
+  virtual void InitGeometryShader(std::string) = 0;
 
+  std::string MakeExceptionMsg(std::string type, std::string fileName);
+  std::string GetCode(std::string path);
+
+  // @deprecated
   std::string m_vertexShaderPath;
+  // @deprecateds
   std::string m_pixelShaderPath;
+  // @deprecated
+  std::string m_geometryShaderPath;
+
+  std::string m_vertexShaderCode;
+  std::string m_pixelShaderCode;
+  std::string m_geometryShaderCode;
+
+  bool useVS;
+  bool usePS;
+  bool useGS;
 };
 }  // namespace libEngine
+
+#include "libEngine/shared/ShaderBufferBase.tpp"

@@ -20,10 +20,10 @@ public:
   float g;
   float b;
   float a;
+  float tx;
+  float ty;
   float nx;
   float ny;
   float nz;
-  float tx;
-  float ty;
 };
 }  // namespace libEngine

@@ -40,8 +40,8 @@ void glMesh::InitBuffer()
   int vtxSize       = sizeof(Vertex);
   int xyzOffset     = 0;
   int rgbOffset     = sizeof(float) * 3;
-  int normalOffset  = sizeof(float) * 7;
-  int textureOffset = sizeof(float) * 10;
+  int textureOffset = sizeof(float) * 7;
+  int normalOffset  = sizeof(float) * 9;
 
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vtxSize, (void*)xyzOffset);
@@ -50,10 +50,10 @@ void glMesh::InitBuffer()
   glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, vtxSize, (void*)rgbOffset);
 
   glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, vtxSize, (void*)normalOffset);
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, vtxSize, (void*)textureOffset);
 
   glEnableVertexAttribArray(3);
-  glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, vtxSize, (void*)textureOffset);
+  glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, vtxSize, (void*)normalOffset);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);

@@ -32,12 +32,11 @@ void glMeshBuffer::Initialize()
 void glMeshBuffer::Render()
 {
   m_mainShader->Bound();
-  m_mainShader->UpdateMat4("model", &m_modelMatrix);
-  if (m_textureBufferObject)
-  {
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_textureBufferObject);
-  }
+  m_mainShader->vertexConstBuffer->data.model        = m_modelMatrix;
+  m_mainShader->vertexConstBuffer->data.invTranspose = m_modelMatrix.inverse().transpose();
+  m_mainShader->vertexConstBuffer->Update();
+  if (m_texture)
+    m_texture->Bound();
   for (auto& mesh : m_meshData)
   {
     mesh->Bound();
@@ -57,6 +56,28 @@ void glMeshBuffer::Render()
     }
     mesh->Unbound();
   }
+  if (m_renderNornal)
+  {
+    auto normalEft                                    = glMemoryDB::instance()->normalEffect;
+    normalEft->geometryConstBuffer->data.model        = m_modelMatrix;
+    normalEft->geometryConstBuffer->data.invTranspose = m_mainShader->vertexConstBuffer->data.invTranspose;
+    normalEft->geometryConstBuffer->data.projection   = m_mainShader->vertexConstBuffer->data.projection;
+    normalEft->geometryConstBuffer->data.view         = m_mainShader->vertexConstBuffer->data.view;
+    normalEft->geometryConstBuffer->data.startColor   = Vec3(1, 0, 0);
+    normalEft->geometryConstBuffer->data.endColor     = Vec3(0, 0, 1);
+    normalEft->geometryConstBuffer->data.normalLength = 0.3f;
+    normalEft->Bound();
+    normalEft->geometryConstBuffer->Update();
+    for (auto& mesh : m_meshData)
+    {
+      mesh->Bound();
+      glDrawArrays(GL_POINTS, 0, mesh->VertexCount());
+      mesh->Unbound();
+    }
+    normalEft->Unbound();
+  }
 }
-
+void glMeshBuffer::RenderNormal()
+{
+}
 }  // namespace libEngine

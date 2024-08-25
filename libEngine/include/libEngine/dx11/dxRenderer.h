@@ -58,6 +58,11 @@ public:
     return m_context;
   }
 
+  Microsoft::WRL::ComPtr<ID3D11DepthStencilState> GetDepthState()
+  {
+    return m_mainDepthState;
+  }
+
 private:
   void InitWindow();
 

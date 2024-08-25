@@ -9,12 +9,18 @@
 #include <sstream>
 #include <string>
 #include <memory>
+#include <exception>
 
+#include "libEngine/opengl/glConstantBuffer.h"
 #include "libEngine/shared/ShaderBufferBase.h"
+#include "libEngine/model/VertexShaderModel.h"
+#include "libEngine/model/PixelShaderModel.h"
+#include "libEngine/model/GeometryShaderModel.h"
 
 namespace libEngine
 {
-class glShaderBuffer : public ShaderBufferBase
+template <typename VTX_C = VertexShaderModel, typename PXL_C = PixelShaderModel, typename GEOM_C = GeometryShaderModel>
+class glShaderBuffer : public ShaderBufferBase<VTX_C, PXL_C, GEOM_C>
 {
 public:
   SHARED_PTR(glShaderBuffer)
@@ -24,16 +30,21 @@ public:
   glShaderBuffer();
   ~glShaderBuffer();
 
-  virtual void UpdateMat4(std::string name, Mat4* data) override;
-  virtual void UpdateVec3(std::string name, Vec3* data) override;
-  virtual void UpdateVec4(std::string name, Vec4* data) override;
+  virtual void Initialize() override;
   virtual void Bound() override;
+  virtual void Unbound() override;
 
 protected:
-  virtual void InitBuffers() override;
+  virtual void InitVertexConstBuffer() override;
+  virtual void InitPixelConstBuffer() override;
+  virtual void InitGeometryConstBuffer() override;
+  virtual void InitVertexShader(std::string) override;
+  virtual void InitPixelShader(std::string) override;
+  virtual void InitGeometryShader(std::string) override;
 
-private:
   void         checkCompileErrors(GLuint shader, std::string type);
   unsigned int ID;
 };
 }  // namespace libEngine
+
+#include "libEngine/opengl/glShaderBuffer.tpp"

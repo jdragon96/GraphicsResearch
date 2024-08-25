@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "libEngine/libEngine.h"
+// #include "libEngine/libEngine.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
@@ -15,7 +15,53 @@
 #include <DirectXMath.h>
 #include <directxtk/SimpleMath.h>
 
-const Engine engineType = Engine::DX11;
+class model
+{
+public:
+  std::string name;
+
+  model()
+  {
+    name = "Test Name!!!";
+  }
+};
+
+template <typename T = model>
+class TestClass
+{
+public:
+  TestClass()
+  {
+    m_model = T();
+  }
+
+  void printName();
+
+  T m_model;
+};
+
+template <typename T = model>
+class TestClass2 : public TestClass<T>
+{
+public:
+  TestClass2()
+  {
+    m_model = T();
+  }
+
+  void printName2()
+  {
+    TestClass<T>::printName();
+  }
+
+  T m_model;
+};
+
+template <typename T>
+void TestClass<T>::printName()
+{
+  std::cout << m_model.name << std::endl;
+}
 
 std::ostream& operator<<(std::ostream& os, DirectX::XMFLOAT4X4 m)
 {
@@ -52,6 +98,9 @@ int main()
   std::cout << glm::to_string(m1 * m1) << std::endl;
 
   DirectX::XMFLOAT4X4 mat(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+
+  auto a = TestClass2<>();
+  a.printName2();
 
   // 90, 100, 110, 120
   // 202, 228, 254, 280

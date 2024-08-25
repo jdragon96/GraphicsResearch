@@ -2,7 +2,7 @@
 
 namespace libEngine
 {
-RendererBase::RendererBase()
+RendererBase::RendererBase() : m_isMousePressed(false)
 {
 }
 RendererBase::~RendererBase()
@@ -19,5 +19,18 @@ void RendererBase::SetRenderFunc(std::function<void()> func)
 void RendererBase::SetOption(RendererOption opt)
 {
   m_option = opt;
+}
+void RendererBase::SetCamera(CameraBuffer::SharedPtr cam)
+{
+  m_camPtr = cam;
+}
+bool& RendererBase::IsMousePressed()
+{
+  return m_isMousePressed;
+}
+void RendererBase::UpdateMousePressStatus(bool flag, int type)
+{
+  this->m_isMousePressed = flag;
+  this->m_buttonType     = type;
 }
 }  // namespace libEngine

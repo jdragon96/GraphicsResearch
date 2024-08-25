@@ -11,8 +11,8 @@
 #include "libEngine/shared/MeshBufferBase.h"
 #include "libEngine/shared/ShaderBufferBase.h"
 #include "libEngine/shared/Mesh.h"
-#include "libEngine/opengl/glShaderBuffer.h"
 #include "libEngine/dx11/dxMesh.h"
+#include "libEngine/dx11/dxMemoryDB.h"
 
 namespace libEngine
 {
@@ -37,6 +37,9 @@ public:
 
   //! 랜더링 루프
   virtual void Render() override;
+
+protected:
+  virtual void RenderNormal();
 
 private:
   unsigned int m_textureBufferObject;

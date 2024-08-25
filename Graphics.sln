@@ -18,16 +18,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "resource", "resource", "{88
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MathTest", "MathTest\MathTest.vcxproj", "{290E9290-DF93-41BA-8245-A588E8B451B3}"
-	ProjectSection(ProjectDependencies) = postProject
-		{BB549CF2-0086-47C6-8C9E-BA89CBC09E78} = {BB549CF2-0086-47C6-8C9E-BA89CBC09E78}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shader", "shader", "{069407DC-8750-4A48-BEB4-0B508F2E794E}"
 	ProjectSection(SolutionItems) = preProject
-		EngineViewer\Resource\colorShader.frag = EngineViewer\Resource\colorShader.frag
-		EngineViewer\Resource\colorShader.vert = EngineViewer\Resource\colorShader.vert
-		EngineViewer\Resource\colorShader.pixel.hlsl = EngineViewer\Resource\colorShader.pixel.hlsl
-		EngineViewer\Resource\colorShader.vertex.hlsl = EngineViewer\Resource\colorShader.vertex.hlsl
+		EngineViewer\Resource\dxColorPixelShader.hlsl = EngineViewer\Resource\dxColorPixelShader.hlsl
+		EngineViewer\Resource\dxColorVertexShader.hlsl = EngineViewer\Resource\dxColorVertexShader.hlsl
+		EngineViewer\Resource\dxCommon.hlsli = EngineViewer\Resource\dxCommon.hlsli
+		EngineViewer\Resource\dxLightPixelShader.hlsl = EngineViewer\Resource\dxLightPixelShader.hlsl
+		EngineViewer\Resource\dxNormalPixelShader.hlsl = EngineViewer\Resource\dxNormalPixelShader.hlsl
+		EngineViewer\Resource\dxNormalVertexShader.hlsl = EngineViewer\Resource\dxNormalVertexShader.hlsl
+		EngineViewer\Resource\dxTexturePixelShader.hlsl = EngineViewer\Resource\dxTexturePixelShader.hlsl
+		EngineViewer\Resource\glColorShader.frag = EngineViewer\Resource\glColorShader.frag
+		EngineViewer\Resource\glColorShader.vert = EngineViewer\Resource\glColorShader.vert
+		EngineViewer\Resource\glTextureShader.frag = EngineViewer\Resource\glTextureShader.frag
 	EndProjectSection
 EndProject
 Global

@@ -13,6 +13,7 @@
 #include "libEngine/shared/Mesh.h"
 #include "libEngine/opengl/glShaderBuffer.h"
 #include "libEngine/opengl/glMesh.h"
+#include "libEngine/opengl/glMemoryDB.h"
 
 namespace libEngine
 {
@@ -24,9 +25,7 @@ public:
   glMeshBuffer();
   ~glMeshBuffer();
 
-  ////! GPU Vertex 데이터를 새로 갱신한다.
-  // void UpdateMesh(std::vector<Mesh> mesh);
-
+  ////! GPU Vertex 데이터를 새로 갱신한다
   virtual void SetMesh(std::vector<MeshData>) override;
 
   //! 랜더링 할 텍스처 버퍼를 선정
@@ -38,8 +37,8 @@ public:
   //! 랜더링 루프
   virtual void Render() override;
 
-private:
-  unsigned int m_textureBufferObject;
+protected:
+  virtual void RenderNormal();
 };
 
 }  // namespace libEngine

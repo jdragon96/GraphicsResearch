@@ -1,44 +1,88 @@
-#include <vector>
-#include "libEngine/libEngine.h"
+﻿#include <vector>
 
-#include "libEngine/Workspace.h"
+#include "stb_image.h"
+#include "libEngine/libEngine.h"
+#include "libEngine/API.h"
+#include "libEngine/dx11/dxMemoryDB.h"
+#include "libEngine/opengl/glShaderBuffer.h"
 
 using namespace libEngine;
 
 int main()
 {
-  Workspace::instance().SetEngine(EngineType::OPENGL);
+  API::instance().SetEngine(EngineType::DX11);
 
   RendererOption opt;
   opt.width  = 1280;
   opt.height = 800;
   opt.title  = "Test Window";
 
-  auto renderer = libEngine::Workspace::instance().MakeRenderer(opt);
+  auto renderer = API::instance().MakeRenderer(opt);
   renderer->Initialize();
 
+  auto texture = API::instance().MakeTexture();
+  texture->AddImage("./Resource/image/earth.jpg");
+
   CameraOption camOpt;
+  camOpt.sensitivity = 0.001f;
   camOpt.SetPerspective(45, 1280.f / 800.f, 0.01f, 100.f);
-  camOpt.SetView(Vec3(2, 0, 0), Vec3(0, 0, 0), Vec3(0, 0, 1));
-  auto defaultCamera = Workspace::instance().MakeCamera(camOpt);
+  camOpt.SetView(Vec3(10, 0, 0), Vec3(0, 0, 0), Vec3(0, 0, 1));
+  auto defaultCamera = API::instance().MakeCamera(camOpt);
   defaultCamera->Initialize();
 
-  auto defaultShader = Workspace::instance().MakeShader();
-  defaultShader->SetVertexShader("./Resource/colorShader.vert");
-  defaultShader->SetPixelShader("./Resource/colorShader.frag");
-  //defaultShader->SetVertexShader("./Resource/colorShader.vertex.hlsl");
-  //defaultShader->SetPixelShader("./Resource/colorShader.pixel.hlsl");
-  defaultShader->initialize();
+  auto defaultShader = API::instance().MakeShader();
+  // defaultShader->SetShaderPath(ShaderType::VERTEX, "./Resource/glColorShader.vert");
+  // defaultShader->SetShaderPath(ShaderType::PIXEL, "./Resource/glColorShader.frag");
+  defaultShader->SetShaderPath(ShaderType::VERTEX, "./Resource/dxColorVertexShader.hlsl");
+  defaultShader->SetShaderPath(ShaderType::PIXEL, "./Resource/dxColorPixelShader.hlsl");
+  defaultShader->Initialize();
 
-  auto buffer = Workspace::instance().MakeMeshBuffer({ Toybox::MakeCube(0.5f, 1, 0, 0) });
+  // auto buffer   = API::instance().MakeMeshBuffer({ Toybox::MakeSphere(0.5f, 1, 0, 0) });
+  auto meshData = Toybox::ReadObject("./Resource/object/stanford_dragon.stl");
+  auto buffer   = API::instance().MakeMeshBuffer(meshData);
+  buffer->SetTexture(texture);
   buffer->SetShader(defaultShader);
+  buffer->Move(Vec3(0, 0, 0));
+  buffer->SetNormalRenderFlag(true);
   buffer->Initialize();
+  // auto dragonNormalBuffer = API::instance().MakeMeshBuffer(meshData);
+  // dragonNormalBuffer->SetShader(normalShader);
+  // dragonNormalBuffer->Move(Vec3(0, 0, 0));
+  // dragonNormalBuffer->Initialize();
 
-  renderer->SetPrevRenderFunc([]() {});
+  auto sunBuffer = API::instance().MakeMeshBuffer({ Toybox::MakeSphere(3, 1, 0, 0) });
+  sunBuffer->SetShader(defaultShader);
+  sunBuffer->Move(Vec3(10, 0, 30));
+  sunBuffer->Initialize();
+
+  auto sunBuffer2 = API::instance().MakeMeshBuffer({ Toybox::MakeSphere(3, 0, 1, 0) });
+  sunBuffer2->SetShader(defaultShader);
+  sunBuffer2->Move(Vec3(0, 0, 20.f));
+  sunBuffer2->Initialize();
+
+  Light light;
+  light.direction = Vec3(0.f, 0.f, -1.f);
+  light.position  = Vec3(0.f, 0.f, 20.f);
+
+  // l.
+  Material dragonMat;
+  dragonMat.ambient        = Vec3(0.5f, 0.1f, 0.1f);
+  dragonMat.ambientFactor  = 1.f;
+  dragonMat.diffuse        = Vec3(1.f, 1.f, 1.f);
+  dragonMat.shininess      = 1.f;
+  dragonMat.specular       = Vec3(1.f, 1.f, 1.f);
+  dragonMat.specularFactor = 0.3f;
+
+  renderer->SetPrevRenderFunc([&]() { renderer->SetCamera(defaultCamera); });
   renderer->SetRenderFunc([&]() {
+    defaultShader->vertexConstBuffer->data.projection = defaultCamera->GetProjMatPtr()->transpose();
+    defaultShader->vertexConstBuffer->data.view       = defaultCamera->GetViewMatPtr()->transpose();
+    defaultShader->pixelConstBuffer->data.camWorld    = defaultCamera->GetCameraPos();
+    defaultShader->pixelConstBuffer->data.useTexture  = false;
+    defaultShader->pixelConstBuffer->data.light       = light;
+    defaultShader->pixelConstBuffer->data.material    = dragonMat;
     defaultShader->Bound();
-    defaultShader->UpdateMat4("view", defaultCamera->GetViewMatPtr());
-    defaultShader->UpdateMat4("projection", defaultCamera->GetProjMatPtr());
+    defaultShader->pixelConstBuffer->Update();
     buffer->Render();
   });
   renderer->Run();

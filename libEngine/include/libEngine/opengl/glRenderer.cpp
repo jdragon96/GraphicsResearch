@@ -1,4 +1,5 @@
 #include "libEngine/opengl/glRenderer.h"
+#include <iostream>
 
 namespace libEngine
 {
@@ -37,7 +38,73 @@ void glRenderer::Initialize()
     throw std::exception("Can't initialize glew instance");
     exit(1);
   }
-  // glfwSetWindowUserPointer(m_window, &WindowsManager::instance());
+  glfwSetWindowUserPointer(m_window, this);
+
+  //>> 마우스 클릭 이벤트
+  glfwSetMouseButtonCallback(m_window, [](GLFWwindow* w, int button, int action, int mods) {
+    auto win = (glRenderer*)glfwGetWindowUserPointer(w);
+    if (action == GLFW_RELEASE)
+    {
+      win->UpdateMousePressStatus(false);
+    }
+    else
+    {
+      win->UpdateMousePressStatus(true, button);
+    }
+  });
+  //>> 마우스 커서 위치 콜백함수
+  glfwSetCursorPosCallback(m_window, [](GLFWwindow* w, double x, double y) {
+    auto win = (glRenderer*)glfwGetWindowUserPointer(w);
+    if (!win->IsMousePressed())
+    {
+      win->prevCursorX = x;
+      win->prevCursorY = y;
+      return;
+    }
+    if (win->m_camPtr == nullptr)
+      return;
+
+    switch (win->GetButtonType())
+    {
+      case GLFW_MOUSE_BUTTON_LEFT:
+        win->m_camPtr->UpdateOrbit(x - win->prevCursorX, y - win->prevCursorY);
+        break;
+      case GLFW_MOUSE_BUTTON_RIGHT:
+        win->m_camPtr->UpdateTranslate(x - win->prevCursorX, y - win->prevCursorY);
+        break;
+    }
+    win->prevCursorX = x;
+    win->prevCursorY = y;
+  });
+
+  //>> 프레임버퍼 사이즈 변경 콜백함수
+  glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* w, int width, int height) {
+    auto win = (glRenderer*)glfwGetWindowUserPointer(w);
+    if (win->m_camPtr == nullptr)
+      return;
+    win->m_camPtr->SetRatio((float)width / (float)height);
+    glViewport(0, 0, width, height);
+  });
+
+  //>> 마우스 스크롤 이벤트
+  glfwSetScrollCallback(m_window, [](GLFWwindow* w, double xoffset, double yoffset) {
+    auto win = (glRenderer*)glfwGetWindowUserPointer(w);
+    if (win->m_camPtr == nullptr)
+      return;
+    std::cout << yoffset << std::endl;
+    if (yoffset > 0)
+      win->m_camPtr->UpdateZoom(true);
+    else
+      win->m_camPtr->UpdateZoom(false);
+  });
+
+  //>> 키보드 클릭 이벤트
+  glfwSetKeyCallback(m_window, [](GLFWwindow* w, int key, int scancode, int action, int mods) {
+    //
+    //
+  });
+
+  glfwSetErrorCallback([](int error, const char* description) { std::cout << description << std::endl; });
 }
 void glRenderer::Run()
 {
@@ -63,5 +130,9 @@ void glRenderer::Run()
     renderFunc();
     glfwSwapBuffers(m_window);
   }
+}
+int& glRenderer::GetButtonType()
+{
+  return m_buttonType;
 }
 }  // namespace libEngine

@@ -20,10 +20,13 @@
 #include "libEngine/dx11/dxConstantBuffer.h"
 #include "libEngine/model/VertexShaderModel.h"
 #include "libEngine/model/PixelShaderModel.h"
+#include "libEngine/model/GeometryShaderModel.h"
 
 namespace libEngine
 {
-class dxShaderBuffer : public ShaderBufferBase
+
+template <typename VTX_C = VertexShaderModel, typename PXL_C = PixelShaderModel, typename GEOM_C = GeometryShaderModel>
+class dxShaderBuffer : public ShaderBufferBase<VTX_C, PXL_C, GEOM_C>
 {
 public:
   SHARED_PTR(dxShaderBuffer)
@@ -33,25 +36,26 @@ public:
   dxShaderBuffer();
   ~dxShaderBuffer();
 
-  virtual void UpdateMat4(std::string name, Mat4* data) override;
-  virtual void UpdateVec3(std::string name, Vec3* data) override;
-  virtual void UpdateVec4(std::string name, Vec4* data) override;
   virtual void Bound() override;
+  virtual void Unbound() override;
 
 protected:
-  virtual void InitBuffers() override;
+  // GPU 메모리 할당
+  virtual void InitVertexConstBuffer() override;
+  virtual void InitPixelConstBuffer() override;
+  virtual void InitGeometryConstBuffer() override;
+  virtual void InitVertexShader(std::string) override;
+  virtual void InitPixelShader(std::string) override;
+  virtual void InitGeometryShader(std::string) override;
 
-private:
   void CheckResult(HRESULT hr, ID3DBlob* errorBlob);
-  void InitVertexShader();
-  void InitPixelShader();
 
-  // Shader part
-  dxConstantBuffer<VertexShaderModel>::SharedPtr vertexConstBuffer;
-  dxConstantBuffer<PixelShaderModel>::SharedPtr  pixelConstBuffer;
-  std::vector<D3D11_INPUT_ELEMENT_DESC>      vertexMemoryTable;
-  Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
-  Microsoft::WRL::ComPtr<ID3D11InputLayout>  inputLayout;
-  Microsoft::WRL::ComPtr<ID3D11PixelShader>  pixelShader;
+  std::vector<D3D11_INPUT_ELEMENT_DESC>        vertexMemoryTable;
+  Microsoft::WRL::ComPtr<ID3D11VertexShader>   vertexShader;
+  Microsoft::WRL::ComPtr<ID3D11InputLayout>    inputLayout;
+  Microsoft::WRL::ComPtr<ID3D11PixelShader>    pixelShader;
+  Microsoft::WRL::ComPtr<ID3D11GeometryShader> geometryShader;
 };
 }  // namespace libEngine
+
+#include "libEngine/dx11/dxShaderBuffer.tpp"

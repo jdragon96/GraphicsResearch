@@ -2,11 +2,17 @@
 
 namespace libEngine
 {
+// dxRenderer* rendererPtr = nullptr;
+
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
   // if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
   //   return true;
+  auto rendererPtr = dxRenderer::instance();
+  if (rendererPtr == nullptr)
+    return false;
 
+  int zDelta;
   switch (msg)
   {
     case WM_SIZE:
@@ -17,12 +23,46 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         return 0;
       break;
     case WM_MOUSEMOVE:
+      if (!rendererPtr->IsMousePressed())
+        break;
+      switch (rendererPtr->m_buttonType)
+      {
+        case 0:
+          rendererPtr->m_camPtr->UpdateOrbit(LOWORD(lParam) - rendererPtr->prevCursorX,
+                                             HIWORD(lParam) - rendererPtr->prevCursorY);
+          break;
+        case 1:
+          rendererPtr->m_camPtr->UpdateTranslate(LOWORD(lParam) - rendererPtr->prevCursorX,
+                                                 HIWORD(lParam) - rendererPtr->prevCursorY);
+          break;
+      }
+      rendererPtr->prevCursorX = LOWORD(lParam);
+      rendererPtr->prevCursorY = HIWORD(lParam);
       break;
     case WM_LBUTTONUP:
+      rendererPtr->UpdateMousePressStatus(false, -1);
+      break;
+    case WM_LBUTTONDOWN:
+      rendererPtr->prevCursorX = LOWORD(lParam);
+      rendererPtr->prevCursorY = HIWORD(lParam);
+      rendererPtr->UpdateMousePressStatus(true, 0);
       break;
     case WM_RBUTTONUP:
+      rendererPtr->UpdateMousePressStatus(false, -1);
+      break;
+    case WM_RBUTTONDOWN:
+      rendererPtr->prevCursorX = LOWORD(lParam);
+      rendererPtr->prevCursorY = HIWORD(lParam);
+      rendererPtr->UpdateMousePressStatus(true, 1);
       break;
     case WM_KEYDOWN:
+      break;
+    case WM_MOUSEWHEEL:
+      zDelta = GET_WHEEL_DELTA_WPARAM(wParam);
+      if (zDelta > 0)
+        rendererPtr->m_camPtr->UpdateZoom(true);
+      else
+        rendererPtr->m_camPtr->UpdateZoom(false);
       break;
     case WM_DESTROY:
       ::PostQuitMessage(0);
@@ -36,6 +76,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 dxRenderer::dxRenderer()
 {
+  // rendererPtr = this;
 }
 dxRenderer::~dxRenderer()
 {
@@ -77,6 +118,8 @@ void dxRenderer::Run()
       m_context->OMSetDepthStencilState(m_mainDepthState.Get(), 0);
       m_context->OMSetRenderTargets(1, m_mainRenderTarget.GetAddressOf(), m_mainDepthView.Get());
       m_context->RSSetState(m_mainRasterizationMode.Get());
+      m_context->PSSetSamplers(0, 1, m_mainSamplerState.GetAddressOf());
+
       //> 메인 랜더링 루프
       renderFunc();
       m_swapChain->Present(1, 0);

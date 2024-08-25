@@ -8,13 +8,13 @@
     <ClCompile Include="include\libEngine\shared\MeshBufferBase.cpp">
       <Filter>shared</Filter>
     </ClCompile>
-    <ClCompile Include="include\libEngine\shared\ShaderBufferBase.cpp">
+    <ClCompile Include="include\libEngine\shared\ShaderBufferBase.tpp">
       <Filter>shared</Filter>
     </ClCompile>
     <ClCompile Include="include\libEngine\opengl\glMeshBuffer.cpp">
       <Filter>opengl</Filter>
     </ClCompile>
-    <ClCompile Include="include\libEngine\opengl\glShaderBuffer.cpp">
+    <ClCompile Include="include\libEngine\opengl\glShaderBuffer.tpp">
       <Filter>opengl</Filter>
     </ClCompile>
     <ClCompile Include="include\libEngine\shared\RendererBase.cpp">
@@ -26,7 +26,7 @@
     <ClCompile Include="include\libEngine\utils\toybox.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="include\libEngine\Workspace.cpp" />
+    <ClCompile Include="include\libEngine\API.cpp" />
     <ClCompile Include="include\libEngine\shared\Mesh.cpp">
       <Filter>shared</Filter>
     </ClCompile>
@@ -45,7 +45,19 @@
     <ClCompile Include="include\libEngine\dx11\dxRenderer.cpp">
       <Filter>dx11</Filter>
     </ClCompile>
-    <ClCompile Include="include\libEngine\dx11\dxShaderBuffer.cpp">
+    <ClCompile Include="include\libEngine\dx11\dxShaderBuffer.tpp">
+      <Filter>dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\opengl\glTexture.cpp">
+      <Filter>opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\shared\TextureBufferBase.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\dx11\dxTexture.cpp">
+      <Filter>dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\dx11\dxMemoryDB.cpp">
       <Filter>dx11</Filter>
     </ClCompile>
   </ItemGroup>
@@ -87,7 +99,7 @@
     <ClInclude Include="include\libEngine\utils\toybox.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="include\libEngine\Workspace.h" />
+    <ClInclude Include="include\libEngine\API.h" />
     <ClInclude Include="include\libEngine\opengl\glMesh.h">
       <Filter>opengl</Filter>
     </ClInclude>
@@ -110,6 +122,36 @@
       <Filter>model</Filter>
     </ClInclude>
     <ClInclude Include="include\libEngine\model\VertexShaderModel.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\opengl\glUBO.h">
+      <Filter>opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\opengl\glTexture.h">
+      <Filter>opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\shared\TextureBufferBase.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\dx11\dxTexture.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\model\GeometryShaderModel.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\dx11\dxMemoryDB.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\shared\ConstantBuffer.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\opengl\glConstantBuffer.h">
+      <Filter>opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\opengl\glMemoryDB.h">
+      <Filter>opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\model\NormalEffectModel.h">
       <Filter>model</Filter>
     </ClInclude>
   </ItemGroup>
@@ -136,6 +178,18 @@
   <ItemGroup>
     <None Include="include\libEngine\dx11\dxConstantBuffer.tpp">
       <Filter>dx11</Filter>
+    </None>
+    <None Include="include\libEngine\opengl\glUBO.tpp">
+      <Filter>opengl</Filter>
+    </None>
+    <None Include="include\libEngine\shared\ConstantBuffer.tpp">
+      <Filter>shared</Filter>
+    </None>
+    <None Include="include\libEngine\opengl\glConstantBuffer.tpp">
+      <Filter>opengl</Filter>
+    </None>
+    <None Include="include\libEngine\opengl\glMemoryDB.tpp">
+      <Filter>opengl</Filter>
     </None>
   </ItemGroup>
 </Project>

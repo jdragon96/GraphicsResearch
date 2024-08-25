@@ -51,3 +51,10 @@ enum class EngineType
   DX11,
   VULKAN
 };
+
+enum class ShaderType
+{
+  PIXEL,
+  VERTEX,
+  GEOMETRY
+};

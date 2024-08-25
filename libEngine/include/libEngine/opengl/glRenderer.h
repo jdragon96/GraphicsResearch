@@ -10,6 +10,7 @@
 
 #include "libEngine/utils/macro.h"
 #include "libEngine/shared/RendererBase.h"
+#include "libEngine/shared/CameraBuffer.h"
 
 namespace libEngine
 {
@@ -20,10 +21,12 @@ public:
 
   glRenderer();
   ~glRenderer();
-
   virtual void Initialize() override;
   virtual void Run() override;
 
+  int& GetButtonType();
+
+protected:
   GLFWwindow* m_window;
 };
 }  // namespace libEngine
