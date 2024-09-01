@@ -1,8 +1,8 @@
 Graphics Research Tools
 
-- [v] OpenGL
-- [v] DirectX11
-- [] DirectX12
-- [] Vulkan
-- [] Metal
-- [v] Qt5
+- [x] OpenGL
+- [x] DirectX11
+- [ ] DirectX12
+- [ ] Vulkan
+- [ ] Metal
+- [x] Qt5
