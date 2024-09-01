@@ -4,17 +4,12 @@ namespace libEngine
 {
 API::API()
 {
-  m_engineType = EngineType::OPENGL;
-}
-void API::SetEngine(EngineType type)
-{
-  m_engineType = type;
 }
 
 ShaderBufferBase<>::SharedPtr API::MakeShader()
 {
   ShaderBufferBase<>::SharedPtr shaderPtr;
-  switch (m_engineType)
+  switch (MemDB::CurrentEngineType)
   {
     case EngineType::OPENGL:
       shaderPtr = glShaderBuffer<>::MakeShared();
@@ -34,7 +29,7 @@ CameraBuffer::SharedPtr API::MakeCamera(CameraOption opt)
 RendererBase::SharedPtr API::MakeRenderer(RendererOption opt)
 {
   RendererBase::SharedPtr wsPtr;
-  switch (m_engineType)
+  switch (MemDB::CurrentEngineType)
   {
     case EngineType::OPENGL:
       wsPtr = glRenderer::instance();
@@ -46,16 +41,16 @@ RendererBase::SharedPtr API::MakeRenderer(RendererOption opt)
   wsPtr->SetOption(opt);
   return wsPtr;
 }
-MeshBufferBase::SharedPtr API::MakeMeshBuffer(std::vector<MeshData> data)
+MeshBufferBase<>::SharedPtr API::MakeMeshBuffer(std::vector<MeshData> data)
 {
-  MeshBufferBase::SharedPtr meshPtr;
-  switch (m_engineType)
+  MeshBufferBase<>::SharedPtr meshPtr;
+  switch (MemDB::CurrentEngineType)
   {
     case EngineType::OPENGL:
-      meshPtr = glMeshBuffer::MakeShared();
+      meshPtr = glMeshBuffer<>::MakeShared();
       break;
     case EngineType::DX11:
-      meshPtr = dxMeshBuffer::MakeShared();
+      meshPtr = dxMeshBuffer<>::MakeShared();
       break;
   }
   meshPtr->SetMesh(data);
@@ -64,7 +59,7 @@ MeshBufferBase::SharedPtr API::MakeMeshBuffer(std::vector<MeshData> data)
 TextureBufferBase::SharedPtr API::MakeTexture()
 {
   TextureBufferBase::SharedPtr texturePtr;
-  switch (m_engineType)
+  switch (MemDB::CurrentEngineType)
   {
     case EngineType::OPENGL:
       texturePtr = glTexture::MakeShared();
@@ -75,5 +70,20 @@ TextureBufferBase::SharedPtr API::MakeTexture()
   }
 
   return texturePtr;
+}
+CubeMapBase::SharedPtr API::MakeCubeMap()
+{
+  CubeMapBase::SharedPtr ptr;
+  switch (MemDB::CurrentEngineType)
+  {
+    case EngineType::OPENGL:
+      ptr = glCubemap::MakeShared();
+      break;
+    case EngineType::DX11:
+      ptr = dxCubemap::MakeShared();
+      break;
+  }
+
+  return ptr;
 }
 }  // namespace libEngine

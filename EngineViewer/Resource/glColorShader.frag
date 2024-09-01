@@ -7,6 +7,9 @@ in vec3 normal;
 in vec2 outTexCoord;
 out vec4 FragColor;
 
+uniform sampler2D texture0;
+uniform samplerCube skybox;
+
 struct Light
 {
     vec3 direction;
@@ -42,4 +45,7 @@ void main(){
     vec3 diffuseColor = lambertFactor * material.diffuse * material.shininess;
     // 3. sepcular color
     FragColor = vec4(ambientColor + diffuseColor, 1);
+
+//    FragColor = texture(skybox, normal);
+    FragColor = texture(skybox, reflect(-toLight, normal));
 }

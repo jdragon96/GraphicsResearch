@@ -40,8 +40,8 @@ PixelShaderInput main(VertexShaderInput input)
     output.color = input.color;
     output.textureCoord = input.texturecoord;
     
-    float4 normal = float4(input.normal, 0.f);
-    output.normal = mul(normal, invTranspose).xyz;
+    float4 normalWorld = float4(input.normal, 0.f);
+    output.normal = mul(normalWorld, invTranspose).xyz;
     output.normal = normalize(output.normal);
 
     return output;

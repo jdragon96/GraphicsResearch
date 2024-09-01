@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="include\libEngine\libEngine.cpp" />
+    <ClCompile Include="include\libEngine\MemDB.cpp" />
     <ClCompile Include="include\libEngine\shared\CameraBuffer.cpp">
       <Filter>shared</Filter>
     </ClCompile>
-    <ClCompile Include="include\libEngine\shared\MeshBufferBase.cpp">
+    <ClCompile Include="include\libEngine\shared\MeshBufferBase.tpp">
       <Filter>shared</Filter>
     </ClCompile>
     <ClCompile Include="include\libEngine\shared\ShaderBufferBase.tpp">
       <Filter>shared</Filter>
     </ClCompile>
-    <ClCompile Include="include\libEngine\opengl\glMeshBuffer.cpp">
+    <ClCompile Include="include\libEngine\opengl\glMeshBuffer.tpp">
       <Filter>opengl</Filter>
     </ClCompile>
     <ClCompile Include="include\libEngine\opengl\glShaderBuffer.tpp">
@@ -39,7 +39,7 @@
     <ClCompile Include="include\libEngine\dx11\dxMesh.cpp">
       <Filter>dx11</Filter>
     </ClCompile>
-    <ClCompile Include="include\libEngine\dx11\dxMeshBuffer.cpp">
+    <ClCompile Include="include\libEngine\dx11\dxMeshBuffer.tpp">
       <Filter>dx11</Filter>
     </ClCompile>
     <ClCompile Include="include\libEngine\dx11\dxRenderer.cpp">
@@ -60,9 +60,21 @@
     <ClCompile Include="include\libEngine\dx11\dxMemoryDB.cpp">
       <Filter>dx11</Filter>
     </ClCompile>
+    <ClCompile Include="include\libEngine\shared\CubeMapBase.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\dx11\dxCubemap.cpp">
+      <Filter>dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\model\ConstBase.cpp">
+      <Filter>model</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\opengl\glCubemap.cpp">
+      <Filter>opengl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\libEngine\libEngine.h" />
+    <ClInclude Include="include\libEngine\MemDB.h" />
     <ClInclude Include="include\libEngine\shared\CameraBuffer.h">
       <Filter>shared</Filter>
     </ClInclude>
@@ -118,15 +130,6 @@
     <ClInclude Include="include\libEngine\dx11\dxConstantBuffer.h">
       <Filter>dx11</Filter>
     </ClInclude>
-    <ClInclude Include="include\libEngine\model\PixelShaderModel.h">
-      <Filter>model</Filter>
-    </ClInclude>
-    <ClInclude Include="include\libEngine\model\VertexShaderModel.h">
-      <Filter>model</Filter>
-    </ClInclude>
-    <ClInclude Include="include\libEngine\opengl\glUBO.h">
-      <Filter>opengl</Filter>
-    </ClInclude>
     <ClInclude Include="include\libEngine\opengl\glTexture.h">
       <Filter>opengl</Filter>
     </ClInclude>
@@ -135,9 +138,6 @@
     </ClInclude>
     <ClInclude Include="include\libEngine\dx11\dxTexture.h">
       <Filter>dx11</Filter>
-    </ClInclude>
-    <ClInclude Include="include\libEngine\model\GeometryShaderModel.h">
-      <Filter>model</Filter>
     </ClInclude>
     <ClInclude Include="include\libEngine\dx11\dxMemoryDB.h">
       <Filter>dx11</Filter>
@@ -151,8 +151,26 @@
     <ClInclude Include="include\libEngine\opengl\glMemoryDB.h">
       <Filter>opengl</Filter>
     </ClInclude>
-    <ClInclude Include="include\libEngine\model\NormalEffectModel.h">
+    <ClInclude Include="include\libEngine\shared\CubeMapBase.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\dx11\dxCubemap.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\model\BlinnPhongEffect.h">
       <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\model\CubemapEffect.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\model\NormalEffect.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\model\ConstBase.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\opengl\glCubemap.h">
+      <Filter>opengl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -179,16 +197,13 @@
     <None Include="include\libEngine\dx11\dxConstantBuffer.tpp">
       <Filter>dx11</Filter>
     </None>
-    <None Include="include\libEngine\opengl\glUBO.tpp">
-      <Filter>opengl</Filter>
-    </None>
     <None Include="include\libEngine\shared\ConstantBuffer.tpp">
       <Filter>shared</Filter>
     </None>
     <None Include="include\libEngine\opengl\glConstantBuffer.tpp">
       <Filter>opengl</Filter>
     </None>
-    <None Include="include\libEngine\opengl\glMemoryDB.tpp">
+    <None Include="include\libEngine\opengl\glMemoryDB.cpp">
       <Filter>opengl</Filter>
     </None>
   </ItemGroup>

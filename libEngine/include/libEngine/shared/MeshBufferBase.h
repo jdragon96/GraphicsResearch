@@ -4,12 +4,14 @@
 
 #include "libEngine/utils/macro.h"
 #include "libEngine/shared/Mesh.h"
+#include "libEngine/model/BlinnPhongEffect.h"
 #include "libEngine/shared/TextureBufferBase.h"
 #include "libEngine/shared/ShaderBufferBase.h"
 
 namespace libEngine
 {
-// template <typename TMesh, typename TShader>
+template <typename VTX_C = BlinnPhong::VertexShaderModel, typename PXL_C = BlinnPhong::PixelShaderModel,
+          typename GEOM_C = BlinnPhong::GeometryShaderModel>
 class MeshBufferBase
 {
 public:
@@ -29,9 +31,7 @@ public:
 
   virtual void SetMesh(std::vector<MeshData>) = 0;
 
-  // virtual void SetMesh(std::vector<TMesh>);
-
-  virtual void SetShader(ShaderBufferBase<>::SharedPtr shader);
+  virtual void SetShader(ShaderBufferBase<VTX_C, PXL_C, GEOM_C>::SharedPtr shader);
 
   void SetMeshType(MeshType type);
 
@@ -42,11 +42,13 @@ public:
 protected:
   virtual void RenderNormal() = 0;
 
-  bool                          m_renderNornal;
-  std::vector<Mesh::SharedPtr>  m_meshData;
-  TextureBufferBase::SharedPtr  m_texture;
-  ShaderBufferBase<>::SharedPtr m_mainShader;
-  Mat4                          m_modelMatrix;
-  MeshType                      m_meshType;
+  bool                                              m_renderNornal;
+  std::vector<Mesh::SharedPtr>                      m_meshData;
+  TextureBufferBase::SharedPtr                      m_texture;
+  ShaderBufferBase<VTX_C, PXL_C, GEOM_C>::SharedPtr m_mainShader;
+  Mat4                                              m_modelMatrix;
+  MeshType                                          m_meshType;
 };
 }  // namespace libEngine
+
+#include "libEngine/shared/MeshBufferBase.tpp"

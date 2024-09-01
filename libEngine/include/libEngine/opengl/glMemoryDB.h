@@ -12,7 +12,7 @@
 
 #include "libEngine/shared/ShaderBufferBase.h"
 #include "libEngine/opengl/glShaderBuffer.h"
-#include "libEngine/model/NormalEffectModel.h"
+#include "libEngine/model/NormalEffect.h"
 #include "libEngine/utils/macro.h"
 
 namespace libEngine

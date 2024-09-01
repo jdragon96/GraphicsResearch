@@ -1,6 +1,9 @@
 #pragma once
 
 #include "libEngine/dx11/dxConstantBuffer.h"
+#include <typeinfo>
+#include <type_traits>
+#include <iostream>
 
 namespace libEngine
 {
@@ -15,12 +18,14 @@ void dxConstantBuffer<T>::Initialize(ShaderType type)
   this->m_buffuerType = type;
   // BindFlag가 D3D11_BIND_CONSTANT_BUFFER일 경우, 아래 조건을 만족해야 함
   // 만약, 16byte 배수가 아니라면 "D3D11_REQ_CONSTANT_BUFFER_ELEMENET_COUNT여야 한다.
-  static_assert((sizeof(T) % 16) == 0, "ConstantBuffer 사이즈는 반드시 16 byte에 정렬되어야 합니다.");
+  std::cout << "Type Name : " << typeid(T).name() << "(" << this->m_dataMemSize << ")" << std::endl;
+  assert((this->m_dataMemSize % 16) == 0, typeid(T).name());
 
   auto devPtr = dxRenderer::instance()->GetDevicePtr();
 
   D3D11_BUFFER_DESC cbDesc;
-  cbDesc.ByteWidth           = sizeof(this->data);
+  // cbDesc.ByteWidth           = sizeof(this->data);
+  cbDesc.ByteWidth           = this->m_dataMemSize;
   cbDesc.Usage               = D3D11_USAGE_DYNAMIC;
   cbDesc.BindFlags           = D3D11_BIND_CONSTANT_BUFFER;
   cbDesc.CPUAccessFlags      = D3D11_CPU_ACCESS_WRITE;
@@ -29,7 +34,7 @@ void dxConstantBuffer<T>::Initialize(ShaderType type)
 
   // Fill in the subresource data.
   D3D11_SUBRESOURCE_DATA InitData;
-  InitData.pSysMem          = &this->data;
+  InitData.pSysMem          = this->StartMemory();
   InitData.SysMemPitch      = 0;
   InitData.SysMemSlicePitch = 0;
   const HRESULT hr          = devPtr->CreateBuffer(&cbDesc, &InitData, m_constantBuffer.GetAddressOf());
@@ -46,7 +51,8 @@ void dxConstantBuffer<T>::Update()
 
   D3D11_MAPPED_SUBRESOURCE ms;
   ctxPtr->Map(m_constantBuffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);
-  memcpy(ms.pData, &this->data, sizeof(this->data));
+  // memcpy(ms.pData, &this->data, sizeof(this->data));
+  memcpy(ms.pData, this->StartMemory(), this->m_dataMemSize);
   ctxPtr->Unmap(m_constantBuffer.Get(), NULL);
 
   switch (this->m_buffuerType)

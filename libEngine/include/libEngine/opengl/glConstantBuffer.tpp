@@ -5,7 +5,7 @@
 namespace libEngine
 {
 template <typename T>
-glConstantBuffer<T>::glConstantBuffer()
+glConstantBuffer<T>::glConstantBuffer() : ConstantBuffer<T>()
 {
 }
 
@@ -32,8 +32,10 @@ void glConstantBuffer<T>::Initialize(ShaderType type)
   glGenBuffers(1, &this->m_ubo);
   glBindBuffer(GL_UNIFORM_BUFFER, this->m_ubo);
   // 2. UBO 메모리 할당
-  glBufferData(GL_UNIFORM_BUFFER, sizeof(T), NULL, GL_STREAM_DRAW);
-  glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(T), &this->data);
+  // glBufferData(GL_UNIFORM_BUFFER, sizeof(T), NULL, GL_STREAM_DRAW);
+  // glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(T), G);
+  glBufferData(GL_UNIFORM_BUFFER, this->m_dataMemSize, NULL, GL_STREAM_DRAW);
+  glBufferSubData(GL_UNIFORM_BUFFER, 0, this->m_dataMemSize, this->StartMemory());
   glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
@@ -42,8 +44,8 @@ void glConstantBuffer<T>::Update()
 {
   // https://stackoverflow.com/questions/29664396/updating-uniform-buffer-objects-costs-performance
   glBindBuffer(GL_UNIFORM_BUFFER, this->m_ubo);
-  glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(T), &this->data);
-  glBindBufferRange(GL_UNIFORM_BUFFER, this->m_constbufferBindingPoint, this->m_ubo, 0, sizeof(T));
+  glBufferSubData(GL_UNIFORM_BUFFER, 0, this->m_dataMemSize, this->StartMemory());
+  glBindBufferRange(GL_UNIFORM_BUFFER, this->m_constbufferBindingPoint, this->m_ubo, 0, this->m_dataMemSize);
   // glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 

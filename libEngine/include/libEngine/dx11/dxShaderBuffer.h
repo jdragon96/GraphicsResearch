@@ -18,14 +18,13 @@
 #include "libEngine/shared/ShaderBufferBase.h"
 #include "libEngine/dx11/dxRenderer.h"
 #include "libEngine/dx11/dxConstantBuffer.h"
-#include "libEngine/model/VertexShaderModel.h"
-#include "libEngine/model/PixelShaderModel.h"
-#include "libEngine/model/GeometryShaderModel.h"
+#include "libEngine/model/BlinnPhongEffect.h"
 
 namespace libEngine
 {
 
-template <typename VTX_C = VertexShaderModel, typename PXL_C = PixelShaderModel, typename GEOM_C = GeometryShaderModel>
+template <typename VTX_C = BlinnPhong::VertexShaderModel, typename PXL_C = BlinnPhong::PixelShaderModel,
+          typename GEOM_C = BlinnPhong::GeometryShaderModel>
 class dxShaderBuffer : public ShaderBufferBase<VTX_C, PXL_C, GEOM_C>
 {
 public:

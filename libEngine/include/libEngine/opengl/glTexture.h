@@ -23,9 +23,15 @@ public:
   glTexture();
   ~glTexture();
 
+  virtual void AddDDS(std::string path) override
+  {
+  }
+
   virtual void AddImage(std::string path) override;
 
   virtual void Bound() override;
+
+  virtual void AddCubemap(std::vector<std::string> pathes) override;
 
 private:
   std::unordered_map<int, unsigned int> m_textureHash;

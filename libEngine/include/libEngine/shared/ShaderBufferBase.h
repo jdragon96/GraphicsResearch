@@ -8,16 +8,15 @@
 #include <iostream>
 #include <sstream>
 
-#include "libEngine/model/VertexShaderModel.h"
-#include "libEngine/model/PixelShaderModel.h"
-#include "libEngine/model/GeometryShaderModel.h"
+#include "libEngine/model/BlinnPhongEffect.h"
 #include "libEngine/utils/macro.h"
 #include "libEngine/shared/ConstantBuffer.h"
 
 namespace libEngine
 {
 
-template <typename VTX_C = VertexShaderModel, typename PXL_C = PixelShaderModel, typename GEOM_C = GeometryShaderModel>
+template <typename VTX_C = BlinnPhong::VertexShaderModel, typename PXL_C = BlinnPhong::PixelShaderModel,
+          typename GEOM_C = BlinnPhong::GeometryShaderModel>
 class ShaderBufferBase
 {
 public:

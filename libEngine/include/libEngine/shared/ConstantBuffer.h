@@ -7,6 +7,7 @@
 
 #include "libEngine/dx11/dxRenderer.h"
 #include "libEngine/utils/macro.h"
+#include "libEngine/model/ConstBase.h"
 
 #include <algorithm>
 #include <iostream>
@@ -27,8 +28,14 @@ public:
 
   virtual void Update() = 0;
 
+  virtual char* StartMemory();
+
   ShaderType m_buffuerType;
   T          data;
+  uint32_t   m_totalMemSize;
+  uint32_t   m_dataMemSize;
+  uint32_t   m_alignSize;
+  uint32_t   m_memOffset;
 };
 }  // namespace libEngine
 

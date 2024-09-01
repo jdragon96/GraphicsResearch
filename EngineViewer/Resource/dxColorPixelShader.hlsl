@@ -1,3 +1,9 @@
+Texture2D g_texture0 : register(t0);
+TextureCube g_textureCube : register(t1);
+
+SamplerState g_sampler : register(s0);
+
+
 struct VertexShaderInput
 {
     float3 pos : POSITION;
@@ -33,8 +39,7 @@ struct Material
     float specularFactor; // 반사광 강도
 };
 
-Texture2D g_texture0 : register(t0);
-SamplerState g_sampler : register(s0);
+
 
 cbuffer PixelConstBuffer : register(b0)
 {
@@ -54,7 +59,7 @@ float4 main(PixelShaderInput input) : SV_TARGET
     float3 diffuseColor = lambertFactor * material.diffuse * material.shininess;
     // 3. specular color(반사광, 눈과 가까운 위치는 빛이 강하게 반사)
     //float3 lightStrength = max(dot(normalize(-light.direction), input.normal), 0) * light.strength;
-    float toCamera = normalize(camWorld - input.posWorld);
+    float3 toCamera = normalize(camWorld - input.posWorld);
     float halfVector = normalize(toCamera + normalize(-light.direction));
     //float halfVector = normalize(toCamera + toLight);
     float NdotH = dot(toCamera, input.normal);
@@ -62,14 +67,19 @@ float4 main(PixelShaderInput input) : SV_TARGET
     
     float3 blinnphong = ambientColor + diffuseColor + specularColor;
     
+    
+    
+    // return g_texture0.Sample(g_sampler, input.textureCoord);
+    return g_textureCube.Sample(g_sampler, reflect(-toCamera, input.normal));
+    return g_textureCube.Sample(g_sampler, input.normal);
     if (useTexture)
     {
         //return g_texture0.Sample(g_sampler, input.textureCoord) * float4(newColor, 1);
-        return float4(blinnphong, 1);
+        return float4(blinnphong, 1) + g_textureCube.Sample(g_sampler, input.normal);
     }
     else
     {
-        return float4(blinnphong, 1);
+        return float4(blinnphong, 1) + g_textureCube.Sample(g_sampler, input.normal);
 
     }
 }

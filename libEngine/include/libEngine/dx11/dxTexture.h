@@ -32,6 +32,10 @@ public:
 
   virtual void Bound() override;
 
+  virtual void AddCubemap(std::vector<std::string> pathes) override;
+
+  virtual void AddDDS(std::string path) override;
+
 private:
   Microsoft::WRL::ComPtr<ID3D11SamplerState>                    m_samplerState;
   std::vector<Microsoft::WRL::ComPtr<ID3D11Texture2D>>          m_texturesPtr;

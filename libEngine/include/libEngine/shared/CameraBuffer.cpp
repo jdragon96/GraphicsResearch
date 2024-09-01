@@ -44,6 +44,7 @@ void CameraBuffer::SetOption(CameraOption opt)
   m_sensitivity = opt.sensitivity;
   SetPersepctive(m_option.fovy, m_option.aspect, m_option.zNear, m_option.zFar);
   SetView(m_option.cam, m_option.target, m_option.up);
+
 }
 
 void CameraBuffer::Initialize()
@@ -66,7 +67,9 @@ void CameraBuffer::SetView(Vec3 cam, Vec3 target, Vec3 up)
 {
   m_camPosition    = cam;
   m_targetPosition = target;
-  m_upVector       = up;
+  m_frontVector    = (target - cam).normalized();
+  m_rightVector    = m_frontVector.cross(up).normalized();
+  m_upVector       = m_rightVector.cross(m_frontVector).normalized();
   m_viewMatrix     = EigenUtils::LookAtRH(cam, target, up);
 }
 

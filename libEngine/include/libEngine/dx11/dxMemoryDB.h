@@ -9,7 +9,7 @@
 
 #include "libEngine/utils/macro.h"
 #include "libEngine/dx11/dxShaderBuffer.h"
-#include "libEngine/model/NormalEffectModel.h"
+#include "libEngine/model/NormalEffect.h"
 
 namespace libEngine
 {

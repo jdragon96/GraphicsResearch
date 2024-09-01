@@ -8,6 +8,7 @@
 
 #include <Eigen/Dense>
 
+#include "libEngine/model/BlinnPhongEffect.h"
 #include "libEngine/shared/MeshBufferBase.h"
 #include "libEngine/shared/ShaderBufferBase.h"
 #include "libEngine/shared/Mesh.h"
@@ -17,7 +18,9 @@
 
 namespace libEngine
 {
-class glMeshBuffer : public MeshBufferBase
+template <typename VTX_C = BlinnPhong::VertexShaderModel, typename PXL_C = BlinnPhong::PixelShaderModel,
+          typename GEOM_C = BlinnPhong::GeometryShaderModel>
+class glMeshBuffer : public MeshBufferBase<VTX_C, PXL_C, GEOM_C>
 {
 public:
   SHARED_PTR(glMeshBuffer)
@@ -42,3 +45,5 @@ protected:
 };
 
 }  // namespace libEngine
+
+#include "libEngine/opengl/glMeshBuffer.tpp"

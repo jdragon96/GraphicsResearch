@@ -47,6 +47,7 @@ enum class MeshType
 
 enum class EngineType
 {
+  NONE,
   OPENGL,
   DX11,
   VULKAN
