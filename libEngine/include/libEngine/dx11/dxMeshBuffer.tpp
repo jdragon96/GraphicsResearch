@@ -45,10 +45,13 @@ template <typename VTX_C, typename PXL_C, typename GEOM_C>
 void dxMeshBuffer<VTX_C, PXL_C, GEOM_C>::Render()
 {
   auto contextPtr = dxRenderer::instance()->GetContextPtr();
-  this->m_mainShader->vertexConstBuffer->data.UpdateModel(this->m_modelMatrix);
   // this->m_mainShader->vertexConstBuffer->data.invTranspose = this->m_modelMatrix.inverse();
-  this->m_mainShader->Bound();
-  this->m_mainShader->vertexConstBuffer->Update();
+  if (this->m_mainShader)
+  {
+    this->m_mainShader->vertexConstBuffer->data.UpdateModel(this->m_modelMatrix);
+    this->m_mainShader->Bound();
+    this->m_mainShader->vertexConstBuffer->Update();
+  }
   if (this->m_texture)
     this->m_texture->Bound();
   for (auto& mesh : this->m_meshData)
@@ -68,26 +71,29 @@ void dxMeshBuffer<VTX_C, PXL_C, GEOM_C>::Render()
     mesh->Bound();
     mesh->Unbound();
   }
-  this->m_mainShader->Unbound();
-  // Normal 랜더링하는 경우
-  // if (this->m_renderNornal)
+  if (this->m_mainShader)
+    this->m_mainShader->Unbound();
+  // if (this->m_texture)
+  //   this->m_texture->Un();
+  //  Normal 랜더링하는 경우
+  //  if (this->m_renderNornal)
   //{
-  //  auto normalEffectPtr = dxMemoryDB::instance()->normalEffect;
-  //  normalEffectPtr->geometryConstBuffer->data.UpdateModel(this->m_modelMatrix);
-  //  normalEffectPtr->geometryConstBuffer->data.view         = this->m_mainShader->vertexConstBuffer->data.view;
-  //  normalEffectPtr->geometryConstBuffer->data.projection   = this->m_mainShader->vertexConstBuffer->data.projection;
-  //  normalEffectPtr->geometryConstBuffer->data.normalLength = 0.3f;
-  //  normalEffectPtr->geometryConstBuffer->data.startColor   = Vec3(1, 0, 0);
-  //  normalEffectPtr->geometryConstBuffer->data.endColor     = Vec3(0, 0, 1);
-  //  normalEffectPtr->Bound();
-  //  normalEffectPtr->geometryConstBuffer->Update();
-  //  for (auto& mesh : this->m_meshData)
-  //  {
-  //    contextPtr->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-  //    contextPtr->Draw(UINT(mesh->VertexCount()), 0);
-  //  }
-  //  normalEffectPtr->Unbound();
-  //}
+  //   auto normalEffectPtr = dxMemoryDB::instance()->normalEffect;
+  //   normalEffectPtr->geometryConstBuffer->data.UpdateModel(this->m_modelMatrix);
+  //   normalEffectPtr->geometryConstBuffer->data.view         = this->m_mainShader->vertexConstBuffer->data.view;
+  //   normalEffectPtr->geometryConstBuffer->data.projection   = this->m_mainShader->vertexConstBuffer->data.projection;
+  //   normalEffectPtr->geometryConstBuffer->data.normalLength = 0.3f;
+  //   normalEffectPtr->geometryConstBuffer->data.startColor   = Vec3(1, 0, 0);
+  //   normalEffectPtr->geometryConstBuffer->data.endColor     = Vec3(0, 0, 1);
+  //   normalEffectPtr->Bound();
+  //   normalEffectPtr->geometryConstBuffer->Update();
+  //   for (auto& mesh : this->m_meshData)
+  //   {
+  //     contextPtr->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+  //     contextPtr->Draw(UINT(mesh->VertexCount()), 0);
+  //   }
+  //   normalEffectPtr->Unbound();
+  // }
 }
 
 template <typename VTX_C, typename PXL_C, typename GEOM_C>

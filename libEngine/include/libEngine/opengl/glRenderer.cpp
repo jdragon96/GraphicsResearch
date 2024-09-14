@@ -91,7 +91,6 @@ void glRenderer::Initialize()
     auto win = (glRenderer*)glfwGetWindowUserPointer(w);
     if (win->m_camPtr == nullptr)
       return;
-    std::cout << yoffset << std::endl;
     if (yoffset > 0)
       win->m_camPtr->UpdateZoom(true);
     else
@@ -105,6 +104,7 @@ void glRenderer::Initialize()
   });
 
   glfwSetErrorCallback([](int error, const char* description) { std::cout << description << std::endl; });
+  InitFrameBuffer();
 }
 void glRenderer::Run()
 {
@@ -127,12 +127,48 @@ void glRenderer::Run()
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glfwPollEvents();
+
+    glBindFramebuffer(GL_FRAMEBUFFER, this->m_frameBuffer);
+    glClearColor(0.f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
     renderFunc();
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDisable(GL_DEPTH_TEST);
+    glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
+    postProcessingFunc();
     glfwSwapBuffers(m_window);
   }
 }
 int& glRenderer::GetButtonType()
 {
   return m_buttonType;
+}
+void glRenderer::InitFrameBuffer()
+{
+  glGenFramebuffers(1, &this->m_frameBuffer);
+  glBindFramebuffer(GL_FRAMEBUFFER, this->m_frameBuffer);
+  // FrameBuffer를 생성시 반드시 하나의 texture buffer를 첨부해야함
+  // 1. textureBuffer
+  glGenTextures(1, &this->m_textureBuffer);
+  glBindTexture(GL_TEXTURE_2D, this->m_textureBuffer);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->m_option.width, this->m_option.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  // glBindTexture(GL_TEXTURE_2D, 0);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->m_textureBuffer, 0);
+  // 2. renderBuffer
+  glGenRenderbuffers(1, &this->m_renderBuffer);
+  glBindRenderbuffer(GL_RENDERBUFFER, this->m_renderBuffer);
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, this->m_option.width, this->m_option.height);
+  // glBindRenderbuffer(GL_RENDERBUFFER, 0);
+  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, this->m_renderBuffer);
+  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+  {
+    std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+    throw std::exception("not created frame buffer");
+  }
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 }  // namespace libEngine

@@ -16,6 +16,10 @@ void RendererBase::SetRenderFunc(std::function<void()> func)
 {
   renderFunc = func;
 }
+void RendererBase::SetPostProcessingFunc(std::function<void()> func)
+{
+  postProcessingFunc = func;
+}
 void RendererBase::SetOption(RendererOption opt)
 {
   m_option = opt;

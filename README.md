@@ -1,4 +1,4 @@
-Graphics Research Tools
+# Graphics Research Tools
 
 - [x] OpenGL
 - [x] DirectX11

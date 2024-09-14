@@ -20,12 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\libEngine\dx11\dxCubemap.cpp" />
+    <ClCompile Include="include\libEngine\dx11\dxFilter.tpp" />
     <ClCompile Include="include\libEngine\dx11\dxMemoryDB.cpp" />
     <ClCompile Include="include\libEngine\dx11\dxMesh.cpp" />
     <ClCompile Include="include\libEngine\dx11\dxMeshBuffer.tpp" />
     <ClCompile Include="include\libEngine\dx11\dxRenderer.cpp" />
     <ClCompile Include="include\libEngine\dx11\dxShaderBuffer.tpp" />
     <ClCompile Include="include\libEngine\dx11\dxTexture.cpp" />
+    <ClCompile Include="include\libEngine\dx11\postprocessing\dxBloomEffect.cpp" />
     <ClCompile Include="include\libEngine\MemDB.cpp" />
     <ClCompile Include="include\libEngine\model\ConstBase.cpp" />
     <ClCompile Include="include\libEngine\opengl\glCubemap.cpp" />
@@ -34,8 +36,10 @@
     <ClCompile Include="include\libEngine\opengl\glRenderer.cpp" />
     <ClCompile Include="include\libEngine\opengl\glShaderBuffer.tpp" />
     <ClCompile Include="include\libEngine\opengl\glTexture.cpp" />
+    <ClCompile Include="include\libEngine\opengl\postprocessing\glBloomEffect.cpp" />
     <ClCompile Include="include\libEngine\shared\CameraBuffer.cpp" />
     <ClCompile Include="include\libEngine\shared\CubeMapBase.cpp" />
+    <ClCompile Include="include\libEngine\shared\FilterBase.tpp" />
     <ClCompile Include="include\libEngine\shared\Mesh.cpp" />
     <ClCompile Include="include\libEngine\shared\MeshBufferBase.tpp" />
     <ClCompile Include="include\libEngine\shared\RendererBase.cpp" />
@@ -43,33 +47,41 @@
     <ClCompile Include="include\libEngine\shared\TextureBufferBase.cpp" />
     <ClCompile Include="include\libEngine\shared\Vertex.cpp" />
     <ClCompile Include="include\libEngine\utils\toybox.cpp" />
-    <ClCompile Include="include\libEngine\API.cpp" />
+    <ClCompile Include="include\libEngine\API.tpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\libEngine\dx11\dxConstantBuffer.h" />
     <ClInclude Include="include\libEngine\dx11\dxCubemap.h" />
+    <ClInclude Include="include\libEngine\dx11\dxFilter.h" />
     <ClInclude Include="include\libEngine\dx11\dxMemoryDB.h" />
     <ClInclude Include="include\libEngine\dx11\dxMesh.h" />
     <ClInclude Include="include\libEngine\dx11\dxMeshBuffer.h" />
     <ClInclude Include="include\libEngine\dx11\dxRenderer.h" />
     <ClInclude Include="include\libEngine\dx11\dxShaderBuffer.h" />
     <ClInclude Include="include\libEngine\dx11\dxTexture.h" />
+    <ClInclude Include="include\libEngine\dx11\postprocessing\dxBloomEffect.h" />
     <ClInclude Include="include\libEngine\MemDB.h" />
     <ClInclude Include="include\libEngine\model\ConstBase.h" />
     <ClInclude Include="include\libEngine\model\BlinnPhongEffect.h" />
     <ClInclude Include="include\libEngine\model\CubemapEffect.h" />
+    <ClInclude Include="include\libEngine\model\GaussianFilter.h" />
     <ClInclude Include="include\libEngine\model\NormalEffect.h" />
+    <ClInclude Include="include\libEngine\model\PBREffect.h" />
     <ClInclude Include="include\libEngine\opengl\glConstantBuffer.h" />
     <ClInclude Include="include\libEngine\opengl\glCubemap.h" />
+    <ClInclude Include="include\libEngine\opengl\glFilter.h" />
     <ClInclude Include="include\libEngine\opengl\glMemoryDB.h" />
     <ClInclude Include="include\libEngine\opengl\glMesh.h" />
     <ClInclude Include="include\libEngine\opengl\glMeshBuffer.h" />
     <ClInclude Include="include\libEngine\opengl\glRenderer.h" />
     <ClInclude Include="include\libEngine\opengl\glShaderBuffer.h" />
     <ClInclude Include="include\libEngine\opengl\glTexture.h" />
+    <ClInclude Include="include\libEngine\opengl\postprocessing\glBloomEffect.h" />
     <ClInclude Include="include\libEngine\shared\CameraBuffer.h" />
     <ClInclude Include="include\libEngine\shared\ConstantBuffer.h" />
     <ClInclude Include="include\libEngine\shared\CubeMapBase.h" />
+    <ClInclude Include="include\libEngine\shared\PostProcessingBase.h" />
+    <ClInclude Include="include\libEngine\shared\FilterBase.h" />
     <ClInclude Include="include\libEngine\shared\Mesh.h" />
     <ClInclude Include="include\libEngine\shared\MeshBufferBase.h" />
     <ClInclude Include="include\libEngine\shared\RendererBase.h" />
@@ -84,8 +96,10 @@
   <ItemGroup>
     <None Include="include\libEngine\dx11\dxConstantBuffer.tpp" />
     <None Include="include\libEngine\opengl\glConstantBuffer.tpp" />
+    <None Include="include\libEngine\opengl\glFilter.tpp" />
     <None Include="include\libEngine\opengl\glMemoryDB.cpp" />
     <None Include="include\libEngine\shared\ConstantBuffer.tpp" />
+    <None Include="include\libEngine\shared\PostProcessingBase.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

@@ -19,6 +19,7 @@ class Toybox
 public:
   static MeshData MakeCube(float length, float r, float g, float b);
   static MeshData MakeSphere(float radius, float r, float g, float b, float numSlice = 20.f, float numStack = 20.f);
+  static MeshData MakeSuqare();
   static std::vector<MeshData> ReadObject(std::string path);
 
 private:

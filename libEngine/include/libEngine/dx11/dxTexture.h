@@ -36,6 +36,15 @@ public:
 
   virtual void AddDDS(std::string path) override;
 
+  void SetResources(std::vector<ID3D11ShaderResourceView*> resources)
+  {
+    m_resourceViewsRawPtr.clear();
+    for (auto res : resources)
+    {
+      m_resourceViewsRawPtr.push_back(res);
+    }
+  }
+
 private:
   Microsoft::WRL::ComPtr<ID3D11SamplerState>                    m_samplerState;
   std::vector<Microsoft::WRL::ComPtr<ID3D11Texture2D>>          m_texturesPtr;

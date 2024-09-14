@@ -33,6 +33,8 @@ public:
   virtual void Bound() override;
   virtual void Unbound() override;
 
+  unsigned int ID;
+
 protected:
   virtual void InitVertexConstBuffer() override;
   virtual void InitPixelConstBuffer() override;
@@ -41,8 +43,7 @@ protected:
   virtual void InitPixelShader(std::string) override;
   virtual void InitGeometryShader(std::string) override;
 
-  void         checkCompileErrors(GLuint shader, std::string type);
-  unsigned int ID;
+  void checkCompileErrors(GLuint shader, std::string type);
 };
 }  // namespace libEngine
 

@@ -33,7 +33,19 @@
   }
 ;
 
+#define FLAG_GENERATOR(NAME)                                                                                           \
+  bool NAME = false;                                                                                                   \
+  void Use##NAME()                                                                                                     \
+  {                                                                                                                    \
+    NAME = true;                                                                                                       \
+  }                                                                                                                    \
+  void NotUse##NAME()                                                                                                  \
+  {                                                                                                                    \
+    NAME = false;                                                                                                      \
+  };
+
 using Mat4 = Eigen::Matrix<float, 4, 4, Eigen::RowMajor>;
+using Vec2 = Eigen::Vector2f;
 using Vec3 = Eigen::Vector3f;
 using Vec4 = Eigen::Vector4f;
 using Quat = Eigen::Quaternionf;

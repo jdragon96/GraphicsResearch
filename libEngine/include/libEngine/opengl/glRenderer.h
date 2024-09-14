@@ -26,6 +26,13 @@ public:
 
   int& GetButtonType();
 
+  unsigned int m_frameBuffer;
+  unsigned int m_textureBuffer;
+  unsigned int m_renderBuffer;
+
+private:
+  void InitFrameBuffer();
+
 protected:
   GLFWwindow* m_window;
 };

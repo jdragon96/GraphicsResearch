@@ -28,6 +28,7 @@ public:
   void         SetOption(RendererOption opt);
   void         SetPrevRenderFunc(std::function<void()> func);
   void         SetRenderFunc(std::function<void()> func);
+  void         SetPostProcessingFunc(std::function<void()> func);
   void         SetCamera(CameraBuffer::SharedPtr cam);
   bool&        IsMousePressed();
   void         UpdateMousePressStatus(bool flag, int type = -1);
@@ -38,11 +39,12 @@ public:
   CameraBuffer::SharedPtr m_camPtr;
   double                  prevCursorX;
   double                  prevCursorY;
+  RendererOption          m_option;
 
 protected:
   bool                  m_isMousePressed;
-  RendererOption        m_option;
-  std::function<void()> prevFunc   = []() {};
-  std::function<void()> renderFunc = []() {};
+  std::function<void()> prevFunc           = []() {};
+  std::function<void()> renderFunc         = []() {};
+  std::function<void()> postProcessingFunc = []() {};
 };
 }  // namespace libEngine

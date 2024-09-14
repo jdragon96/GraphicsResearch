@@ -86,9 +86,9 @@ void dxTexture::AddImage(std::string path)
 
       //// Fill in the subresource data.
       D3D11_SUBRESOURCE_DATA InitData;
-      InitData.pSysMem          = texture.data();
-      InitData.SysMemPitch      = txtDesc.Width * sizeof(uint8_t) * 4;
-      InitData.SysMemSlicePitch = txtDesc.Height * txtDesc.Width * sizeof(uint8_t) * 4;
+      InitData.pSysMem     = texture.data();
+      InitData.SysMemPitch = txtDesc.Width * sizeof(uint8_t) * 4;
+      // InitData.SysMemSlicePitch = txtDesc.Height * txtDesc.Width * sizeof(uint8_t) * 4;
 
       auto devPtr = dxRenderer::instance()->GetDevicePtr();
       devPtr->CreateTexture2D(&txtDesc, &InitData, texturePtr.GetAddressOf());

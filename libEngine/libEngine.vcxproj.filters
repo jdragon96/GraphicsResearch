@@ -26,7 +26,7 @@
     <ClCompile Include="include\libEngine\utils\toybox.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="include\libEngine\API.cpp" />
+    <ClCompile Include="include\libEngine\API.tpp" />
     <ClCompile Include="include\libEngine\shared\Mesh.cpp">
       <Filter>shared</Filter>
     </ClCompile>
@@ -71,6 +71,18 @@
     </ClCompile>
     <ClCompile Include="include\libEngine\opengl\glCubemap.cpp">
       <Filter>opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\shared\FilterBase.tpp">
+      <Filter>shared</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\dx11\dxFilter.tpp">
+      <Filter>dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\dx11\postprocessing\dxBloomEffect.cpp">
+      <Filter>dx11\postprocessing</Filter>
+    </ClCompile>
+    <ClCompile Include="include\libEngine\opengl\postprocessing\glBloomEffect.cpp">
+      <Filter>opengl\postprocessing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +184,30 @@
     <ClInclude Include="include\libEngine\opengl\glCubemap.h">
       <Filter>opengl</Filter>
     </ClInclude>
+    <ClInclude Include="include\libEngine\model\PBREffect.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\model\GaussianFilter.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\shared\FilterBase.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\dx11\dxFilter.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\opengl\glFilter.h">
+      <Filter>opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\shared\PostProcessingBase.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\dx11\postprocessing\dxBloomEffect.h">
+      <Filter>dx11\postprocessing</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libEngine\opengl\postprocessing\glBloomEffect.h">
+      <Filter>opengl\postprocessing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="dx11">
@@ -192,6 +228,12 @@
     <Filter Include="model">
       <UniqueIdentifier>{de66fd5f-9c2a-4f75-aa8d-0b13d61eab38}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dx11\postprocessing">
+      <UniqueIdentifier>{6b3a3598-5c4e-49c7-857a-c6320e5a99bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="opengl\postprocessing">
+      <UniqueIdentifier>{372f7d8f-8c6a-47c0-bc45-d783a42b8adb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\libEngine\dx11\dxConstantBuffer.tpp">
@@ -205,6 +247,12 @@
     </None>
     <None Include="include\libEngine\opengl\glMemoryDB.cpp">
       <Filter>opengl</Filter>
+    </None>
+    <None Include="include\libEngine\opengl\glFilter.tpp">
+      <Filter>opengl</Filter>
+    </None>
+    <None Include="include\libEngine\shared\PostProcessingBase.cpp">
+      <Filter>shared</Filter>
     </None>
   </ItemGroup>
 </Project>

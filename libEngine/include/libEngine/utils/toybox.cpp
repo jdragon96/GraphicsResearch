@@ -121,6 +121,53 @@ std::vector<MeshData> Toybox::ReadObject(std::string path)
 
   return totalObject;
 }
+MeshData Toybox::MakeSuqare()
+{
+  std::vector<Vec3> positions;
+  std::vector<Vec3> colors;
+  std::vector<Vec3> normals;
+  std::vector<Vec2> texcoords;  // 텍스춰 좌표
+
+  const float scale = 1.0f;
+
+  // 앞면
+  positions.push_back(Vec3(-1.0f, -1.0f, 0.0f));
+  positions.push_back(Vec3(-1.0f, 1.0f, 0.0f));
+  positions.push_back(Vec3(1.0f, 1.0f, 0.0f));
+  positions.push_back(Vec3(1.0f, -1.0f, 0.0f));
+  colors.push_back(Vec3(0.0f, 0.0f, 1.0f));
+  colors.push_back(Vec3(0.0f, 0.0f, 1.0f));
+  colors.push_back(Vec3(0.0f, 0.0f, 1.0f));
+  colors.push_back(Vec3(0.0f, 0.0f, 1.0f));
+  normals.push_back(Vec3(0.0f, 0.0f, -1.0f));
+  normals.push_back(Vec3(0.0f, 0.0f, -1.0f));
+  normals.push_back(Vec3(0.0f, 0.0f, -1.0f));
+  normals.push_back(Vec3(0.0f, 0.0f, -1.0f));
+
+  // Texture Coordinates (Direct3D 9)
+  // https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
+  texcoords.push_back(Vec2(0.0f, 1.0f));
+  texcoords.push_back(Vec2(0.0f, 0.0f));
+  texcoords.push_back(Vec2(1.0f, 0.0f));
+  texcoords.push_back(Vec2(1.0f, 1.0f));
+
+  MeshData meshData;
+
+  for (size_t i = 0; i < positions.size(); i++)
+  {
+    Vertex v;
+    v.SetPosition(positions[i].x(), positions[i].y(), positions[i].z());
+    v.SetNormal(normals[i].x(), normals[i].y(), normals[i].z());
+    v.SetTextureCoord(texcoords[i].x(), texcoords[i].y());
+    meshData.vertices.push_back(v);
+  }
+  meshData.indices = {
+    // 3, 1, 0, 3, 2, 1,  // 앞면
+    0, 2, 1, 0, 3, 2,  // 앞면
+    // 0, 1, 2, 0, 2, 3,  // 앞면
+  };
+  return meshData;
+}
 void Toybox::processNode(aiNode* node, const aiScene* scene, std::vector<MeshData>& models)
 {
   // 1. 현재 노드에 위치하여있는 각각의 매쉬를 처리한다.

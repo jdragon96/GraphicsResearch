@@ -63,7 +63,7 @@ public:
     return m_mainDepthState;
   }
 
-private:
+public:
   void InitWindow();
 
   void InitDeviceAndSwapChain();
@@ -87,5 +87,7 @@ private:
   Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_mainDepthState;
   // texture sampler
   Microsoft::WRL::ComPtr<ID3D11SamplerState> m_mainSamplerState;
+
+  Microsoft::WRL::ComPtr<ID3D11Texture2D> m_tempTexture;
 };
 }  // namespace libEngine

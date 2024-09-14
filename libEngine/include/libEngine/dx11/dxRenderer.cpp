@@ -1,4 +1,5 @@
 #include "libEngine/dx11/dxRenderer.h"
+#include <iostream>
 
 namespace libEngine
 {
@@ -112,7 +113,7 @@ void dxRenderer::Run()
       // RS: Rasterizer stage
       // OM: Output-Merger stage
 
-      float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+      float clearColor[4] = { 0.0f, 1.0f, 0.0f, 1.0f };
       m_context->ClearRenderTargetView(m_mainRenderTarget.Get(), clearColor);
       m_context->ClearDepthStencilView(m_mainDepthView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
       m_context->OMSetDepthStencilState(m_mainDepthState.Get(), 0);
@@ -122,6 +123,11 @@ void dxRenderer::Run()
 
       //> 메인 랜더링 루프
       renderFunc();
+      Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
+      dxRenderer::instance()->m_swapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+      dxRenderer::instance()->m_context->ResolveSubresource(dxRenderer::instance()->m_tempTexture.Get(), 0,
+                                                            backBuffer.Get(), 0, DXGI_FORMAT_R8G8B8A8_UNORM);
+      postProcessingFunc();
       m_swapChain->Present(1, 0);
     }
   }
@@ -225,6 +231,8 @@ void dxRenderer::InitDeviceAndSwapChain()
   sd.BufferDesc.RefreshRate.Numerator   = 60;
   sd.BufferDesc.RefreshRate.Denominator = 1;
   //> 스왑체인 사용 방식 결정(랜더타깃의 출력으로 사용)
+  // 1. 입력 허용
+  // 2. 출력 허용
   sd.BufferUsage  = DXGI_USAGE_SHADER_INPUT | DXGI_USAGE_RENDER_TARGET_OUTPUT;
   sd.OutputWindow = m_mainWindow;
   //> 풀 스크린 모드
@@ -268,16 +276,34 @@ void dxRenderer::InitRenderingTarget(Microsoft::WRL::ComPtr<ID3D11RenderTargetVi
     throw std::exception("Must be initialized swap chain and device");
 
   m_swapChain->GetBuffer(0, IID_PPV_ARGS(&buffer));
+  // m_swapChain->GetBuffer(0, IID_PPV_ARGS(buffer.GetAddressOf()));
   if (buffer)
   {
+    // 1. 랜더링 버퍼를 출력으로 취급
     auto result = m_device->CreateRenderTargetView(buffer.Get(), nullptr, renderTarget.GetAddressOf());
     if (FAILED(result))
       throw std::exception("ERROR CreateRenderTargetView");
 
+    // 2. 랜더링 버퍼를 셰이더 입력용 텍스처로 취급
     // back buffer에 있는 이미지를 다른 버퍼에 넣어야 함
-    result = m_device->CreateShaderResourceView(buffer.Get(), nullptr, shaderResource.GetAddressOf());
-    if (FAILED(result))
+    // result = m_device->CreateShaderResourceView(buffer.Get(), nullptr, shaderResource.GetAddressOf());
+    // if (FAILED(result))
+    //  throw std::exception("ERROR CreateShaderResouorceView");
+
+    // 2.2. shader resource를 backbuffer가 아닌 Texture2D에서 생성하도록 한다.
+    // Texture2DMS를 Texture2D로 변환해서 ShaderResource로 사용하면 됩니다.
+    D3D11_TEXTURE2D_DESC desc;
+    buffer->GetDesc(&desc);
+    desc.SampleDesc.Count   = 1;
+    desc.SampleDesc.Quality = 0;
+    desc.BindFlags          = D3D11_BIND_SHADER_RESOURCE;
+    desc.MiscFlags          = 0;
+
+    if (FAILED(m_device->CreateTexture2D(&desc, nullptr, m_tempTexture.GetAddressOf())))
       throw std::exception("ERROR CreateShaderResouorceView");
+
+    // ShaderResource를 (backBuffer가 아니라) tempTexture로부터 생성
+    m_device->CreateShaderResourceView(m_tempTexture.Get(), nullptr, m_mainShaderResource.GetAddressOf());
   }
   else
     throw std::exception("ERROR InitRenderingTarget");
@@ -305,6 +331,7 @@ void dxRenderer::InitRasterizerState(Microsoft::WRL::ComPtr<ID3D11RasterizerStat
   rastDesc.FillMode              = mode;
   rastDesc.CullMode              = cull;
   rastDesc.FrontCounterClockwise = false;
+  rastDesc.DepthClipEnable       = true;  // <- zNear, zFar 확인에 필요
   m_device->CreateRasterizerState(&rastDesc, rasterizerState.GetAddressOf());
 }
 
@@ -344,10 +371,12 @@ void dxRenderer::InitDepthBuffer(Microsoft::WRL::ComPtr<ID3D11Texture2D>&       
   if (FAILED(m_device->CreateTexture2D(&depthStencilBufferDesc, 0, depthBuffer.GetAddressOf())))
   {
     // TODO: CreateTexture2D() failed
+    std::cout << "CreateTexture2D() failed." << std::endl;
   }
   if (FAILED(m_device->CreateDepthStencilView(depthBuffer.Get(), 0, &depthView)))
   {
     // TODO: CreateDepthStencilView() failed
+    std::cout << "CreateDepthStencilView() failed." << std::endl;
   }
 }
 
