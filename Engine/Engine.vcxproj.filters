@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="dx11">
+      <UniqueIdentifier>{73a6841d-1385-4e2c-8978-4402dfd4d8da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{7ba3b280-99e8-4135-8ddc-11e468be1733}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="interface">
+      <UniqueIdentifier>{2d29bb58-61a2-4c53-a921-f6a78faa02e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="model">
+      <UniqueIdentifier>{f7c57454-42ad-4fe2-9f47-10ead66c2750}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="include\engine\dx11\Dx11EngineManager.cpp">
+      <Filter>dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\dx11\Dx11GraphicsPSO.cpp">
+      <Filter>dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\dx11\Dx11MemoryManager.cpp">
+      <Filter>dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\dx11\Dx11TextureBuffer.cpp">
+      <Filter>dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\common\FBXLoader.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\common\SystemUtils.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\common\EigenUtils.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\common\CameraBuffer.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\common\Drawing.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\common\ResourceUtils.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\dx11\Dx11StructuredBuffer.cpp">
+      <Filter>dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\model\AnimationData.cpp">
+      <Filter>model</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\model\CBlinnPhong.cpp">
+      <Filter>model</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\model\CCommon.cpp">
+      <Filter>model</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\model\MeshData.cpp">
+      <Filter>model</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\model\VertexData.cpp">
+      <Filter>model</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\model\CMesh.cpp">
+      <Filter>model</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\engine\dx11\Dx11ConstantBuffer.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\dx11\Dx11ConstantBuffer_inli.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\dx11\Dx11EngineManager.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\dx11\Dx11GraphicsPSO.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\dx11\Dx11MemoryManager.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\dx11\Dx11MeshBuffer.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\dx11\Dx11MeshBuffer_inli.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\dx11\Dx11StructuredBuffer.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\dx11\Dx11TextureBuffer.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\common\EigenUtils.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\common\FBXLoader.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\common\SystemUtils.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\Macro.h" />
+    <ClInclude Include="include\engine\common\CameraBuffer.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\common\Drawing.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\common\ResourceUtils.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\interface\TextureBufferBase.h">
+      <Filter>interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\model\AnimationData.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\model\CBlinnPhong.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\model\CCommon.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\model\MeshData.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\model\VertexData.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\interface\ConstBufferBase.h">
+      <Filter>interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\interface\MeshBufferBase.h">
+      <Filter>interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\model\CMesh.h">
+      <Filter>model</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
