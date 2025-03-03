@@ -79,3 +79,9 @@ template <typename T>
 void Dx11ConstantBuffer<T>::Bind()
 {
 }
+
+template <typename T>
+void Dx11ConstantBuffer<T>::Show()
+{
+  m_bufferData.Render();
+}

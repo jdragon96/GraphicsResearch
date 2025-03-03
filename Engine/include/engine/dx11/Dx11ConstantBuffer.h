@@ -34,6 +34,8 @@ public:
 
   void Bind();
 
+  void Show();
+
   Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
 
   T m_bufferData;

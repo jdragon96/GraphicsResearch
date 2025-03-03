@@ -231,5 +231,6 @@ void Dx11MeshBuffer<T>::Render()
 	contextPtr->VSSetConstantBuffers(1, 1, m_constBuffer->m_constantBuffer.GetAddressOf());
 	contextPtr->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &stride, &offset);
 	contextPtr->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	contextPtr->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	contextPtr->DrawIndexed(UINT(m_mesh.indices.size()), 0, 0);
 }
