@@ -3,6 +3,7 @@
 #include "engine/dx11/Dx11MeshBuffer.h"
 #include "engine/dx11/Dx11ConstantBuffer.h"
 #include "engine/dx11/Dx11TextureBuffer.h"
+#include "engine/dx11/Dx11Filter.h"
 #include "engine/common/CameraBuffer.h"
 #include "engine/common/Drawing.h"
 #include "engine/model/CBlinnPhong.h"
@@ -42,13 +43,13 @@ public:
       scOption.BufferCount                        = 2;
       scOption.BufferDesc.RefreshRate.Numerator   = 60;
       scOption.BufferDesc.RefreshRate.Denominator = 1;
-      scOption.BufferUsage                        = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_UNORDERED_ACCESS;
-      scOption.Windowed                           = TRUE;
-      scOption.Flags                              = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-      scOption.SwapEffect                         = DXGI_SWAP_EFFECT_DISCARD;
-      scOption.OutputWindow                       = Dx11EngineManager::instance().m_mainWindow;
-      scOption.BufferDesc.Width                   = Dx11EngineManager::instance().m_option.width;
-      scOption.BufferDesc.Height                  = Dx11EngineManager::instance().m_option.height;
+      scOption.BufferUsage  = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_SHADER_INPUT | DXGI_USAGE_UNORDERED_ACCESS;
+      scOption.Windowed     = TRUE;
+      scOption.Flags        = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+      scOption.SwapEffect   = DXGI_SWAP_EFFECT_DISCARD;
+      scOption.OutputWindow = Dx11EngineManager::instance().m_mainWindow;
+      scOption.BufferDesc.Width  = Dx11EngineManager::instance().m_option.width;
+      scOption.BufferDesc.Height = Dx11EngineManager::instance().m_option.height;
       Dx11EngineManager::instance().InitDeviceAndSwapChain(scOption);
     }
 
@@ -56,6 +57,7 @@ public:
       Microsoft::WRL::ComPtr<ID3D11Texture2D> backTexture;
       Dx11EngineManager::instance().TextureFromBack(backTexture);
       Dx11EngineManager::instance().InitRTV(backTexture, backbufferRTV);
+      Dx11EngineManager::instance().InitSRV(backTexture, backbufferSRV);
     }
     {
       D3D11_TEXTURE2D_DESC dsOption;
@@ -119,7 +121,7 @@ public:
     {
       defaultPSO = Dx11GraphicsPSO::MakeShared();
       defaultPSO->SetVertexShader(
-          "../../resource/BasicVertexShader.hlsl",
+          "../../resource/dx11/BasicVertexShader.hlsl",
           {
               { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
               { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(float) * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -127,11 +129,13 @@ public:
               { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float) * 9, D3D11_INPUT_PER_VERTEX_DATA, 0 },
           },
           std::vector<D3D_SHADER_MACRO>{ { "SKINNED", "0" }, { NULL, NULL } });
-      defaultPSO->SetPixelShader("../../resource/BlinnPhongReflect.hlsl");
+      defaultPSO->SetPixelShader("../../resource/dx11/BlinnPhongReflect.hlsl");
     }
 
     // 3. 매쉬 버퍼 생성하기
     {
+      auto earthTexturePtr = Dx11TextureBuffer::MakeShared();
+      earthTexturePtr->LoadJPG("../../resource/world.jpg");
       auto texturePtr = Dx11TextureBuffer::MakeShared();
       texturePtr->LoadDDS("../../resource/skybox.dds");
 
@@ -140,12 +144,12 @@ public:
       cubeBuffer->SetMesh(MakeSphere(Vec3(1, 0, 0), 1.f, 20, 20));
       cubeBuffer->SetObjectType(ObjectType::CHARACTER);
       cubeBuffer->UseSimulation(false);
-      cubeBuffer->SetTexture({ texturePtr });
+      cubeBuffer->SetTexture({ earthTexturePtr, texturePtr });
       cubeBuffer->Initialize();
 
       auto cubemapPSO = Dx11GraphicsPSO::MakeShared();
       cubemapPSO->SetVertexShader(
-          "../../resource/BasicVertexShader.hlsl",
+          "../../resource/dx11/BasicVertexShader.hlsl",
           {
               { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
               { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(float) * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -153,7 +157,7 @@ public:
               { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float) * 9, D3D11_INPUT_PER_VERTEX_DATA, 0 },
           },
           std::vector<D3D_SHADER_MACRO>{ { "SKINNED", "0" }, { NULL, NULL } });
-      cubemapPSO->SetPixelShader("../../resource/CubemapPixelShader.hlsl");
+      cubemapPSO->SetPixelShader("../../resource/dx11/CubemapPixelShader.hlsl");
 
       BackgroundBuffer = Dx11MeshBuffer<VertexData>::MakeShared();
       BackgroundBuffer->SetPSO(cubemapPSO);
@@ -177,14 +181,38 @@ public:
 
   void Run()
   {
-    blinnPhongBuffer->m_bufferData.light.position = Vec3(-1.6, 1.6, 1.3);
-    blinnPhongBuffer->m_bufferData.light.direction = Vec3(-0.5, -0.1, -0.4);
-    blinnPhongBuffer->m_bufferData.mat.ambient     = Vec3(-0.16, 0.19, 0.64);
-    blinnPhongBuffer->m_bufferData.mat.ambientFactor = 0.2;
-    blinnPhongBuffer->m_bufferData.mat.diffuse       = Vec3(0, 0.1, 0.1);
-    blinnPhongBuffer->m_bufferData.mat.shininess     = 0.0;
-    blinnPhongBuffer->m_bufferData.mat.specular      = Vec3(1,1,1);
+    blinnPhongBuffer->m_bufferData.light.position     = Vec3(-1.6, 1.6, 1.3);
+    blinnPhongBuffer->m_bufferData.light.direction    = Vec3(-0.5, -0.1, -0.4);
+    blinnPhongBuffer->m_bufferData.mat.ambient        = Vec3(-0.16, 0.19, 0.64);
+    blinnPhongBuffer->m_bufferData.mat.ambientFactor  = 0.2;
+    blinnPhongBuffer->m_bufferData.mat.diffuse        = Vec3(0, 0.1, 0.1);
+    blinnPhongBuffer->m_bufferData.mat.shininess      = 0.0;
+    blinnPhongBuffer->m_bufferData.mat.specular       = Vec3(1, 1, 1);
     blinnPhongBuffer->m_bufferData.mat.specularFactor = 1.3;
+
+    copyFilter = std::make_shared<Dx11Filter>("../../resource/dx11/FilterVertexShader.hlsl",
+                                              "../../resource/dx11/CopyPixelShader.hlsl", 1280, 800);
+    copyFilter->SetShaderResource({ backbufferSRV });
+    filter0    = std::make_shared<Dx11Filter>("../../resource/dx11/FilterVertexShader.hlsl",
+                                              "../../resource/dx11/ThresholdPixelShader.hlsl", 1280, 800);
+    filter0->SetShaderResource({ backbufferSRV });
+    filter1 = std::make_shared<Dx11Filter>("../../resource/dx11/FilterVertexShader.hlsl",
+                                           "../../resource/dx11/BlurXPixelShader.hlsl", 1280, 800);
+    filter1->SetShaderResource({ filter0->m_shaderResourceView });
+    filter2 = std::make_shared<Dx11Filter>("../../resource/dx11/FilterVertexShader.hlsl",
+                                           "../../resource/dx11/BlurYPixelShader.hlsl", 1280, 800);
+    filter2->SetShaderResource({ filter1->m_shaderResourceView });
+    filter3 = std::make_shared<Dx11Filter>("../../resource/dx11/FilterVertexShader.hlsl",
+                                           "../../resource/dx11/BlurXPixelShader.hlsl", 640, 400);
+    filter3->SetShaderResource({ filter2->m_shaderResourceView });
+    filter4 = std::make_shared<Dx11Filter>("../../resource/dx11/FilterVertexShader.hlsl",
+                                           "../../resource/dx11/BlurYPixelShader.hlsl", 640, 400);
+    filter4->SetShaderResource({ filter3->m_shaderResourceView });
+
+    filter5 = std::make_shared<Dx11Filter>("../../resource/dx11/FilterVertexShader.hlsl",
+                                           "../../resource/dx11/CombinePixelShader.hlsl", 1280, 800);
+    filter5->SetShaderResource({ copyFilter->m_shaderResourceView, filter4->m_shaderResourceView });
+    filter5->SetRenderTarget({ backbufferRTV });
 
     Dx11EngineManager::instance().imguiFunc = [&]() {
       //
@@ -196,10 +224,10 @@ public:
       const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
       contextPtr->ClearRenderTargetView(backbufferRTV.Get(), clearColor);
       contextPtr->ClearDepthStencilView(defaultDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-      contextPtr->RSSetState(defaultRS.Get());
-      contextPtr->PSSetSamplers(0, 1, defaultSampler.GetAddressOf());
       contextPtr->OMSetRenderTargets(1, backbufferRTV.GetAddressOf(), defaultDSV.Get());
       contextPtr->OMSetDepthStencilState(defaultDSS.Get(), 1);
+      contextPtr->RSSetState(defaultRS.Get());
+      contextPtr->PSSetSamplers(0, 1, defaultSampler.GetAddressOf());
 
       // 1. 공유 상수버퍼 갱신
       commonBuffer->m_bufferData.view       = mainCamera->GetViewMatPtr()->transpose();
@@ -210,9 +238,16 @@ public:
       contextPtr->VSSetConstantBuffers(0, 1, commonBuffer->GetPtr());
       contextPtr->PSSetConstantBuffers(5, 1, blinnPhongBuffer->GetPtr());
 
-      // 2. ㅇㅇㅇ
+      // 2.
       BackgroundBuffer->Render();
       cubeBuffer->Render();
+      copyFilter->Render();
+      filter0->Render();
+      filter1->Render();
+      filter2->Render();
+      filter3->Render();
+      filter4->Render();
+      filter5->Render();
     };
 
     Dx11EngineManager::instance().Run();
@@ -226,13 +261,23 @@ public:
   Dx11MeshBuffer<VertexData>::SharedPtr cubeBuffer;
   Dx11MeshBuffer<VertexData>::SharedPtr BackgroundBuffer;
 
-  CameraBuffer::SharedPtr                         mainCamera;
-  Microsoft::WRL::ComPtr<ID3D11RenderTargetView>  backbufferRTV;
-  Microsoft::WRL::ComPtr<ID3D11DepthStencilView>  defaultDSV;
-  Microsoft::WRL::ComPtr<ID3D11Texture2D>         depthTexture;
-  Microsoft::WRL::ComPtr<ID3D11RasterizerState>   defaultRS;
-  Microsoft::WRL::ComPtr<ID3D11DepthStencilState> defaultDSS;
-  Microsoft::WRL::ComPtr<ID3D11SamplerState>      defaultSampler;
+  CameraBuffer::SharedPtr                          mainCamera;
+  Microsoft::WRL::ComPtr<ID3D11RenderTargetView>   backbufferRTV;
+  Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> backbufferSRV;
+  Microsoft::WRL::ComPtr<ID3D11RenderTargetView>   PostProcessingBuffer;
+  Microsoft::WRL::ComPtr<ID3D11DepthStencilView>   defaultDSV;
+  Microsoft::WRL::ComPtr<ID3D11Texture2D>          depthTexture;
+  Microsoft::WRL::ComPtr<ID3D11RasterizerState>    defaultRS;
+  Microsoft::WRL::ComPtr<ID3D11DepthStencilState>  defaultDSS;
+  Microsoft::WRL::ComPtr<ID3D11SamplerState>       defaultSampler;
+
+  std::shared_ptr<Dx11Filter> copyFilter;
+  std::shared_ptr<Dx11Filter> filter0;
+  std::shared_ptr<Dx11Filter> filter1;
+  std::shared_ptr<Dx11Filter> filter2;
+  std::shared_ptr<Dx11Filter> filter3;
+  std::shared_ptr<Dx11Filter> filter4;
+  std::shared_ptr<Dx11Filter> filter5;
 };
 
 void main()

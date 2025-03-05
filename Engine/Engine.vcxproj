@@ -26,6 +26,7 @@
     <ClCompile Include="include\engine\common\ResourceUtils.cpp" />
     <ClCompile Include="include\engine\common\SystemUtils.cpp" />
     <ClCompile Include="include\engine\dx11\Dx11EngineManager.cpp" />
+    <ClCompile Include="include\engine\dx11\Dx11Filter.cpp" />
     <ClCompile Include="include\engine\dx11\Dx11GraphicsPSO.cpp" />
     <ClCompile Include="include\engine\dx11\Dx11MemoryManager.cpp" />
     <ClCompile Include="include\engine\dx11\Dx11StructuredBuffer.cpp" />
@@ -33,6 +34,7 @@
     <ClCompile Include="include\engine\model\AnimationData.cpp" />
     <ClCompile Include="include\engine\model\CBlinnPhong.cpp" />
     <ClCompile Include="include\engine\model\CCommon.cpp" />
+    <ClCompile Include="include\engine\model\CFilter.cpp" />
     <ClCompile Include="include\engine\model\CMesh.cpp" />
     <ClCompile Include="include\engine\model\MeshData.cpp" />
     <ClCompile Include="include\engine\model\VertexData.cpp" />
@@ -47,6 +49,7 @@
     <ClInclude Include="include\engine\dx11\Dx11ConstantBuffer.h" />
     <ClInclude Include="include\engine\dx11\Dx11ConstantBuffer_inli.h" />
     <ClInclude Include="include\engine\dx11\Dx11EngineManager.h" />
+    <ClInclude Include="include\engine\dx11\Dx11Filter.h" />
     <ClInclude Include="include\engine\dx11\Dx11GraphicsPSO.h" />
     <ClInclude Include="include\engine\dx11\Dx11MemoryManager.h" />
     <ClInclude Include="include\engine\dx11\Dx11MeshBuffer.h" />
@@ -60,6 +63,7 @@
     <ClInclude Include="include\engine\model\AnimationData.h" />
     <ClInclude Include="include\engine\model\CBlinnPhong.h" />
     <ClInclude Include="include\engine\model\CCommon.h" />
+    <ClInclude Include="include\engine\model\CFilter.h" />
     <ClInclude Include="include\engine\model\CMesh.h" />
     <ClInclude Include="include\engine\model\MeshData.h" />
     <ClInclude Include="include\engine\model\VertexData.h" />

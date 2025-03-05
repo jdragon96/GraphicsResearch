@@ -66,6 +66,12 @@
     <ClCompile Include="include\engine\model\CMesh.cpp">
       <Filter>model</Filter>
     </ClCompile>
+    <ClCompile Include="include\engine\dx11\Dx11Filter.cpp">
+      <Filter>dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\model\CFilter.cpp">
+      <Filter>model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\engine\dx11\Dx11ConstantBuffer.h">
@@ -139,6 +145,12 @@
       <Filter>interface</Filter>
     </ClInclude>
     <ClInclude Include="include\engine\model\CMesh.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\dx11\Dx11Filter.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\model\CFilter.h">
       <Filter>model</Filter>
     </ClInclude>
   </ItemGroup>

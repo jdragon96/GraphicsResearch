@@ -7,7 +7,7 @@ public:
   HRESULT __stdcall Open(D3D_INCLUDE_TYPE IncludeType, LPCSTR pFileName,
     LPCVOID pParentData, LPCVOID* ppData, UINT* pBytes) override
   {
-    std::string filePath = "../../resource/" + std::string(pFileName);
+    std::string filePath = "../../resource/dx11/" + std::string(pFileName);
     std::ifstream file(filePath, std::ios::binary);
     if (!file) return E_FAIL;
 

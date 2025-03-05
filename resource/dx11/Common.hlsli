@@ -14,9 +14,8 @@ struct VSInput
     float3 vertexPos : POSITION0; //모델 좌표계의 위치 position
     float4 vertexColor: COLOR0;
     float2 vertexTexCoord : TEXTURECOORD0;
-    float3 vertexNormal : NORMAL0; // 모델 좌표계의 normal    
-    // float3 tangentModel : TANGENT;
-
+    float3 vertexNormal : NORMAL0; // 모델 좌표계의 normal
+    
 // #ifdef SKINNED
 //     float4 boneWeights0 : BLENDWEIGHT0;
 //     float4 boneWeights1 : BLENDWEIGHT1;
@@ -35,7 +34,6 @@ struct PSInput
     float3 tangentWorld : TANGENT0;
     float3 posModel : POSITION1; // Volume casting 시작점
 };
-
 
 /********************* Const buffer *********************/
 cbuffer GlobalConstants : register(b0)
@@ -95,7 +93,15 @@ cbuffer PixelConstBuffer : register(b5)
   int      useBP;
   int      useAmbient;
   int      useDiffuse;
-  int      dummy2;
+  int      useTexture;
+}
+
+cbuffer FilterConstBuffer: register(b6)
+{
+  float dx;
+  float dy;
+  float threshold;
+  float strength;
 }
 
 #endif

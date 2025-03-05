@@ -30,9 +30,9 @@ public:
 	Vec3     eyeWorld;
 	float    dummy1;
 	int      useBP;
-	int      useAmbient;
-	int      useDiffuse;
-	int      dummy2;
+	int      useAmbient = 0;
+  int      useDiffuse = 0;
+  int      useTexture = 0;
 
 	void Render()
 	{
@@ -55,6 +55,7 @@ public:
 			ImGui::CheckboxFlags("useBP", &useBP, 1);
 			ImGui::CheckboxFlags("useAmbient", &useAmbient, 1);
 			ImGui::CheckboxFlags("useDiffuse", &useDiffuse, 1);
+      ImGui::CheckboxFlags("useTexture", &useTexture, 1);
 			ImGui::TreePop();
 		}
 	}
