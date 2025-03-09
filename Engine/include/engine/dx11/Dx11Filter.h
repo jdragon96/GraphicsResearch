@@ -106,12 +106,12 @@ public:
     }
     // 6.  Constant Buffer 持失
     {
-      m_constBuffer = Dx11ConstantBuffer<CFilter>::MakeShared();
-      m_constBuffer->m_bufferData.dx = 1.f / width;
-      m_constBuffer->m_bufferData.dy = 1.f / height;
+      m_constBuffer                         = Dx11ConstantBuffer<CFilter>::MakeShared();
+      m_constBuffer->m_bufferData.dx        = 1.f / width;
+      m_constBuffer->m_bufferData.dy        = 1.f / height;
       m_constBuffer->m_bufferData.threshold = 0.7f;
-      m_constBuffer->m_bufferData.strength = 3.f;
-      m_constBuffer->Initialize();
+      m_constBuffer->m_bufferData.strength  = 3.f;
+      m_constBuffer->Initialize(EConstBufferType::PIXEL);
     }
     // 7. Viewport 持失
     {
@@ -156,7 +156,7 @@ public:
     }
     {
       m_constBuffer->Update();
-      m_constBuffer->Bind(EConstBufferType::FILTER);
+      m_constBuffer->Bind();
       // contextPtr->PSSetConstantBuffers(6, 1, m_constBuffer->GetPtr());
     }
     {
@@ -173,8 +173,8 @@ protected:
   Dx11MeshBuffer<VertexData>::SharedPtr  m_meshBuffer;
   Dx11ConstantBuffer<CFilter>::SharedPtr m_constBuffer;
 
-  Microsoft::WRL::ComPtr<ID3D11SamplerState>       m_samplerState;
-  Microsoft::WRL::ComPtr<ID3D11RasterizerState>    m_rasterizerSate;
+  Microsoft::WRL::ComPtr<ID3D11SamplerState>    m_samplerState;
+  Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_rasterizerSate;
 
   D3D11_VIEWPORT                         m_viewport;
   std::vector<ID3D11RenderTargetView*>   m_renderTargetLists;

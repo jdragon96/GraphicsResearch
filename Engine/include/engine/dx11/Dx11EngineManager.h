@@ -11,6 +11,7 @@
 
 #include "engine/Macro.h"
 #include "engine/common/CameraBuffer.h"
+#include "engine/interface/EngineBase.h"
 
 #include <d3d11.h>
 #include <d3dcompiler.h>
@@ -110,7 +111,7 @@ public:
   int frame = 0;
 };
 
-class Dx11EngineManager
+class Dx11EngineManager : public EngineBase
 {
 public:
   SINGLETON(Dx11EngineManager);
@@ -120,10 +121,10 @@ public:
 
   void SetCamera(CameraBuffer::SharedPtr cam)
   {
-    camPtr = cam;
+    m_camPtr = cam;
   }
 
-  void SetScreenOption(RendererOption option);
+  // void SetScreenOption(RendererOption option);
 
   virtual void Initialize();
 
@@ -261,52 +262,48 @@ public:
   }
 
   ////////////////////////////////////// 마우스 및 카메라 처리
-  bool IsPressed()
-  {
-    return isMousePressedFlag;
-  }
 
   void UpdatePressState(MouseButtonType type, bool flag)
   {
-    isMousePressedFlag     = flag;
-    whichButtonTypePressed = type;
+    m_isMousePressed = flag;
+    m_buttonType     = type;
     if (!flag)
     {
-      prevPosX = -1.f;
-      prevPosY = -1.f;
+      m_prevPosX = -1.f;
+      m_prevPosY = -1.f;
     }
   }
 
   MouseButtonType WhichButtonPressed()
   {
-    return whichButtonTypePressed;
+    return m_buttonType;
   }
 
   void UpdateCameraOrbit(float posX, float posY)
   {
-    if (!camPtr)
+    if (!m_camPtr)
       return;
-    if ((prevPosX < 0.f) && (prevPosY < 0.f))
+    if ((m_prevPosX < 0.f) && (m_prevPosY < 0.f))
     {
-      prevPosX = posX;
-      prevPosY = posY;
+      m_prevPosX = posX;
+      m_prevPosY = posY;
       return;
     }
-    if (whichButtonTypePressed == MouseButtonType::LEFT)
+    if (m_buttonType == MouseButtonType::LEFT)
     {
-      camPtr->UpdateOrbit(posX - prevPosX, posY - prevPosY);
+      m_camPtr->UpdateOrbit(posX - m_prevPosX, posY - m_prevPosY);
     }
     else
     {
-      camPtr->UpdateTranslate(posX - prevPosX, posY - prevPosY);
+      m_camPtr->UpdateTranslate(posX - m_prevPosX, posY - m_prevPosY);
     }
-    prevPosX = posX;
-    prevPosY = posY;
+    m_prevPosX = posX;
+    m_prevPosY = posY;
   }
 
   void UpdateCameraZoom(bool zoom)
   {
-    camPtr->UpdateZoom(zoom);
+    m_camPtr->UpdateZoom(zoom);
   }
 
   void SetMainViewport()
@@ -315,17 +312,12 @@ public:
     ZeroMemory(&m_mainVP, sizeof(D3D11_VIEWPORT));
     m_mainVP.TopLeftX = 0;
     m_mainVP.TopLeftY = 0;
-    m_mainVP.Width    = float(m_option.width);
-    m_mainVP.Height   = float(m_option.height);
+    m_mainVP.Width    = float(m_screenOption.width);
+    m_mainVP.Height   = float(m_screenOption.height);
     m_mainVP.MinDepth = 0.0f;
     m_mainVP.MaxDepth = 1.0f;
     m_context->RSSetViewports(1, &m_mainVP);
   }
-
-  std::function<void()> prevFunc           = []() {};
-  std::function<void()> renderFunc         = []() {};
-  std::function<void()> postProcessingFunc = []() {};
-  std::function<void()> imguiFunc          = []() {};
 
   void InitPhysX()
   {
@@ -395,7 +387,6 @@ public:
   HWND           m_mainWindow;
   D3D11_VIEWPORT m_mainVP;
 
-  RendererOption           m_option;
   DXGI_SWAP_CHAIN_DESC     scOption;
   D3D11_RASTERIZER_DESC    rsOption;
   D3D11_TEXTURE2D_DESC     dsOption;
@@ -413,14 +404,11 @@ public:
   Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_mainDepthState;
   Microsoft::WRL::ComPtr<ID3D11SamplerState>      m_mainSamplerState;
 
-  bool            isMousePressedFlag;
-  MouseButtonType whichButtonTypePressed;
+  // bool            isMousePressedFlag;
+  // MouseButtonType whichButtonTypePressed;
 
-  CameraBuffer::SharedPtr camPtr;
-
-  float prevPosX          = -1.f;
-  float prevPosY          = -1.f;
-  bool  m_keyPressed[256] = {
+  // CameraBuffer::SharedPtr camPtr;
+  bool m_keyPressed[256] = {
     false,
   };
 };

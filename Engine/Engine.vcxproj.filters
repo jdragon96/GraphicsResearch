@@ -13,6 +13,9 @@
     <Filter Include="model">
       <UniqueIdentifier>{f7c57454-42ad-4fe2-9f47-10ead66c2750}</UniqueIdentifier>
     </Filter>
+    <Filter Include="opengl">
+      <UniqueIdentifier>{81cc9d94-7549-43e5-819d-9b024d603b58}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\engine\dx11\Dx11EngineManager.cpp">
@@ -77,6 +80,9 @@
     </ClCompile>
     <ClCompile Include="include\engine\model\CBillboardCube.cpp">
       <Filter>model</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\opengl\glEngineManager.cpp">
+      <Filter>opengl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -165,5 +171,34 @@
     <ClInclude Include="include\engine\model\CBillboardCube.h">
       <Filter>model</Filter>
     </ClInclude>
+    <ClInclude Include="include\engine\opengl\glConstantBuffer.h">
+      <Filter>opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\opengl\glMeshBuffer.h">
+      <Filter>opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\opengl\glMeshBuffer_inli.h">
+      <Filter>opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\opengl\glGraphicsPSO.h">
+      <Filter>opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\interface\PipelineObjectBase.h">
+      <Filter>interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\opengl\glEngineManager.h">
+      <Filter>opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\interface\EngineBase.h">
+      <Filter>interface</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\engine\opengl\glConstantBuffer_inli.h">
+      <Filter>opengl</Filter>
+    </None>
+    <None Include="include\engine\opengl\glGraphicsPSO.cpp">
+      <Filter>opengl</Filter>
+    </None>
   </ItemGroup>
 </Project>

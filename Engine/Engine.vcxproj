@@ -40,6 +40,7 @@
     <ClCompile Include="include\engine\model\CMesh.cpp" />
     <ClCompile Include="include\engine\model\MeshData.cpp" />
     <ClCompile Include="include\engine\model\VertexData.cpp" />
+    <ClCompile Include="include\engine\opengl\glEngineManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\engine\common\CameraBuffer.h" />
@@ -59,7 +60,9 @@
     <ClInclude Include="include\engine\dx11\Dx11StructuredBuffer.h" />
     <ClInclude Include="include\engine\dx11\Dx11TextureBuffer.h" />
     <ClInclude Include="include\engine\interface\ConstBufferBase.h" />
+    <ClInclude Include="include\engine\interface\EngineBase.h" />
     <ClInclude Include="include\engine\interface\MeshBufferBase.h" />
+    <ClInclude Include="include\engine\interface\PipelineObjectBase.h" />
     <ClInclude Include="include\engine\interface\TextureBufferBase.h" />
     <ClInclude Include="include\engine\Macro.h" />
     <ClInclude Include="include\engine\model\AnimationData.h" />
@@ -71,6 +74,15 @@
     <ClInclude Include="include\engine\model\CMesh.h" />
     <ClInclude Include="include\engine\model\MeshData.h" />
     <ClInclude Include="include\engine\model\VertexData.h" />
+    <ClInclude Include="include\engine\opengl\glConstantBuffer.h" />
+    <ClInclude Include="include\engine\opengl\glEngineManager.h" />
+    <ClInclude Include="include\engine\opengl\glGraphicsPSO.h" />
+    <ClInclude Include="include\engine\opengl\glMeshBuffer.h" />
+    <ClInclude Include="include\engine\opengl\glMeshBuffer_inli.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\engine\opengl\glConstantBuffer_inli.h" />
+    <None Include="include\engine\opengl\glGraphicsPSO.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

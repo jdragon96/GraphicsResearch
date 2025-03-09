@@ -48,8 +48,8 @@ public:
       scOption.Flags        = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
       scOption.SwapEffect   = DXGI_SWAP_EFFECT_DISCARD;
       scOption.OutputWindow = Dx11EngineManager::instance().m_mainWindow;
-      scOption.BufferDesc.Width  = Dx11EngineManager::instance().m_option.width;
-      scOption.BufferDesc.Height = Dx11EngineManager::instance().m_option.height;
+      scOption.BufferDesc.Width  = Dx11EngineManager::instance().m_screenOption.width;
+      scOption.BufferDesc.Height = Dx11EngineManager::instance().m_screenOption.height;
       Dx11EngineManager::instance().InitDeviceAndSwapChain(scOption);
     }
 
@@ -62,8 +62,8 @@ public:
     {
       D3D11_TEXTURE2D_DESC dsOption;
       ZeroMemory(&dsOption, sizeof(dsOption));
-      dsOption.Width              = Dx11EngineManager::instance().m_option.width;
-      dsOption.Height             = Dx11EngineManager::instance().m_option.height;
+      dsOption.Width              = Dx11EngineManager::instance().m_screenOption.width;
+      dsOption.Height             = Dx11EngineManager::instance().m_screenOption.height;
       dsOption.MipLevels          = 1;
       dsOption.ArraySize          = 1;
       dsOption.Format             = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -173,9 +173,9 @@ public:
     }
     {
       commonBuffer = Dx11ConstantBuffer<CCommon>::MakeShared();
-      commonBuffer->Initialize();
+      commonBuffer->Initialize(EConstBufferType::VERTEX_GLOBAL);
       blinnPhongBuffer = Dx11ConstantBuffer<CBlinnPhong>::MakeShared();
-      blinnPhongBuffer->Initialize();
+      blinnPhongBuffer->Initialize(EConstBufferType::PIXEL);
     }
     Dx11EngineManager::instance().InitImGui();
   }
@@ -234,10 +234,10 @@ public:
       commonBuffer->m_bufferData.view       = mainCamera->GetViewMatPtr()->transpose();
       commonBuffer->m_bufferData.projection = mainCamera->GetProjMatPtr()->transpose();
       commonBuffer->Update();
-      commonBuffer->Bind(EConstBufferType::VERTEX_GLOBAL);
+      commonBuffer->Bind();
       blinnPhongBuffer->m_bufferData.eyeWorld = mainCamera->GetCameraPos();
       blinnPhongBuffer->Update();
-      blinnPhongBuffer->Bind(EConstBufferType::PIXEL);
+      blinnPhongBuffer->Bind();
       // contextPtr->VSSetConstantBuffers(0, 1, commonBuffer->GetPtr());
       // contextPtr->PSSetConstantBuffers(5, 1, blinnPhongBuffer->GetPtr());
 

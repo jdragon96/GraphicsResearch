@@ -134,7 +134,7 @@ void Dx11MeshBuffer<T>::Initialize()
     m_constBuffer = Dx11ConstantBuffer<CMesh>::MakeShared();
     m_constBuffer->m_bufferData.world.setIdentity();
     m_constBuffer->m_bufferData.worldInv.setIdentity();
-    m_constBuffer->Initialize();
+    m_constBuffer->Initialize(EConstBufferType::VERTEX_MODEL);
   }
   // 4. BBox 생성하기
   {
@@ -225,7 +225,7 @@ void Dx11MeshBuffer<T>::Render()
       textures[index] = m_textureBuffer[index]->textureResourceView.Get();
     contextPtr->PSSetShaderResources(0, m_textureBuffer.size(), textures.data());
   }
-  m_constBuffer->Bind(EConstBufferType::VERTEX_MODEL);
+  m_constBuffer->Bind();
   contextPtr->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &stride, &offset);
   contextPtr->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
   // contextPtr->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

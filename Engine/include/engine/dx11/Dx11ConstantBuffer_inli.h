@@ -7,15 +7,16 @@
 #include "engine/dx11/Dx11ConstantBuffer.h"
 
 template <typename T>
-Dx11ConstantBuffer<T>::Dx11ConstantBuffer()
+Dx11ConstantBuffer<T>::Dx11ConstantBuffer() : ConstBufferBase<T>()
 {
 }
 
 template <typename T>
-void Dx11ConstantBuffer<T>::Initialize()
+void Dx11ConstantBuffer<T>::Initialize(EConstBufferType Type)
 {
   assert((sizeof(m_bufferData) % 16) == 0);
-  auto devPtr = Dx11EngineManager::instance().GetDevicePtr();
+  auto devPtr                      = Dx11EngineManager::instance().GetDevicePtr();
+  ConstBufferBase<T>::m_bufferType = Type;
 
   D3D11_BUFFER_DESC cbDesc;
   cbDesc.ByteWidth           = sizeof(m_bufferData);
@@ -46,22 +47,6 @@ void Dx11ConstantBuffer<T>::Update(T& data)
   ctxPtr->Map(m_constantBuffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);
   memcpy(ms.pData, &data, sizeof(T));
   ctxPtr->Unmap(m_constantBuffer.Get(), NULL);
-
-  // switch (this->m_buffuerType)
-  //{
-  //   case ShaderType::VERTEX:
-  //     ctxPtr->VSSetConstantBuffers(0, 1, m_constantBuffer.GetAddressOf());
-  //     break;
-  //   case ShaderType::PIXEL:
-  //     ctxPtr->PSSetConstantBuffers(0, 1, m_constantBuffer.GetAddressOf());
-  //     break;
-  //   case ShaderType::GEOMETRY:
-  //     ctxPtr->GSSetConstantBuffers(0, 1, m_constantBuffer.GetAddressOf());
-  //     break;
-  //   case ShaderType::COMPUTE:
-  //     ctxPtr->CSSetConstantBuffers(0, 1, m_constantBuffer.GetAddressOf());
-  //     break;
-  // }
 }
 
 template <typename T>
@@ -76,7 +61,7 @@ void Dx11ConstantBuffer<T>::Update()
 }
 
 template <typename T>
-void Dx11ConstantBuffer<T>::Bind(EConstBufferType Type)
+void Dx11ConstantBuffer<T>::Bind()
 {
   /**
    * 0 : vertex 공통 데이터
@@ -85,7 +70,7 @@ void Dx11ConstantBuffer<T>::Bind(EConstBufferType Type)
    * 7 : Gemoetry 공통 데이터
    */
   auto ctxPtr = Dx11EngineManager::instance().GetContextPtr();
-  switch (Type)
+  switch (ConstBufferBase<T>::m_bufferType)
   {
     case EConstBufferType::VERTEX_GLOBAL:
       ctxPtr->VSSetConstantBuffers(0, 1, m_constantBuffer.GetAddressOf());

@@ -12,18 +12,19 @@
 
 #include "engine/Macro.h"
 #include "engine/dx11/Dx11EngineManager.h"
+#include "engine/interface/ConstBufferBase.h"
 
 template <typename T>
-class Dx11ConstantBuffer
+class Dx11ConstantBuffer : public ConstBufferBase<T>
 {
 public:
   SHARED_PTR(Dx11ConstantBuffer);
 
   Dx11ConstantBuffer();
 
-  virtual void Initialize();
+  virtual void Initialize(EConstBufferType Type) override;
 
-  virtual void Update(T& data);
+  virtual void Update(T& data) override;
 
   virtual void Update();
 
@@ -32,7 +33,7 @@ public:
     return m_constantBuffer.GetAddressOf();
   }
 
-  void Bind(EConstBufferType Type);
+  virtual void Bind() override;
 
   void Show();
 

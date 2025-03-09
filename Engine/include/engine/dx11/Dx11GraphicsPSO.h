@@ -11,20 +11,23 @@
 #include "engine/dx11/Dx11EngineManager.h"
 #include "engine/common/ResourceUtils.h"
 #include "engine/Macro.h"
+#include "engine/interface/PipelineObjectBase.h"
 
-// Âü°í: DirectX_Graphic-Samples ¹Ì´Ï¿£Áø
+// ï¿½ï¿½ï¿½ï¿½: DirectX_Graphic-Samples ï¿½Ì´Ï¿ï¿½ï¿½ï¿½
 // https://github.com/microsoft/DirectX-Graphics-Samples/blob/master/MiniEngine/Core/PipelineState.h
 
-// Âü°í: D3D12_GRAPHICS_PIPELINE_STATE_DESC
+// ï¿½ï¿½ï¿½ï¿½: D3D12_GRAPHICS_PIPELINE_STATE_DESC
 // https://learn.microsoft.com/en-us/windows/win32/api/d3d12/ns-d3d12-d3d12_graphics_pipeline_state_desc
 
-// PipelineStateObject: ·»´õ¸µÇÒ ¶§ ContextÀÇ »óÅÂ¸¦ ¾î¶»°Ô ¼³Á¤ÇØÁÙÁö ÀúÀå
-// ComputePSO´Â º°µµ·Î Á¤ÀÇ
+// PipelineStateObject: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Contextï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½î¶»ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ComputePSOï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-class Dx11GraphicsPSO
+class Dx11GraphicsPSO : public PipelineObjectBase
 {
 public:
   SHARED_PTR(Dx11GraphicsPSO);
+
+  Dx11GraphicsPSO();
 
   void operator=(const Dx11GraphicsPSO& pso);
   void SetBlendFactor(const float blendFactor[4]);
@@ -39,13 +42,12 @@ public:
   void SetDomainShader(std::string path);
 
 public:
-  Microsoft::WRL::ComPtr<ID3D11VertexShader>   m_vertexShader;
-  Microsoft::WRL::ComPtr<ID3D11PixelShader>    m_pixelShader;
-  Microsoft::WRL::ComPtr<ID3D11HullShader>     m_hullShader;
-  Microsoft::WRL::ComPtr<ID3D11DomainShader>   m_domainShader;
-  Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_geometryShader;
-  Microsoft::WRL::ComPtr<ID3D11InputLayout>    m_inputLayout;
-
+  Microsoft::WRL::ComPtr<ID3D11VertexShader>      m_vertexShader;
+  Microsoft::WRL::ComPtr<ID3D11PixelShader>       m_pixelShader;
+  Microsoft::WRL::ComPtr<ID3D11HullShader>        m_hullShader;
+  Microsoft::WRL::ComPtr<ID3D11DomainShader>      m_domainShader;
+  Microsoft::WRL::ComPtr<ID3D11GeometryShader>    m_geometryShader;
+  Microsoft::WRL::ComPtr<ID3D11InputLayout>       m_inputLayout;
   Microsoft::WRL::ComPtr<ID3D11BlendState>        m_blendState;
   Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState;
   Microsoft::WRL::ComPtr<ID3D11RasterizerState>   m_rasterizerState;
@@ -56,6 +58,5 @@ public:
   D3D11_PRIMITIVE_TOPOLOGY m_primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 private:
-  std::string ReadCode(std::string path);
-  void        CheckCompile(HRESULT hr, ID3DBlob* errorBlob);
+  void CheckCompile(HRESULT hr, ID3DBlob* errorBlob);
 };

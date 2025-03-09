@@ -31,6 +31,10 @@ public:
   }
 };
 
+Dx11GraphicsPSO::Dx11GraphicsPSO() : PipelineObjectBase()
+{
+}
+
 void Dx11GraphicsPSO::operator=(const Dx11GraphicsPSO& pso)
 {
   m_vertexShader      = pso.m_vertexShader;
@@ -92,7 +96,6 @@ void Dx11GraphicsPSO::Bind()
 void Dx11GraphicsPSO::SetVertexShader(std::string path, std::vector<D3D11_INPUT_ELEMENT_DESC> elements,
                                       const std::vector<D3D_SHADER_MACRO> shaderMacros)
 {
-  auto vtxPath   = std::wstring().assign(path.begin(), path.end());
   auto devicePtr = Dx11EngineManager::instance().GetDevicePtr();
 
   Microsoft::WRL::ComPtr<ID3DBlob> shaderBlob;
@@ -101,7 +104,7 @@ void Dx11GraphicsPSO::SetVertexShader(std::string path, std::vector<D3D11_INPUT_
 #if defined(DEBUG) || defined(_DEBUG)
   compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
-  std::string code = ReadCode(path);
+  std::string code = ReadFile(path);
 
   // 1. 셰이더 코드 컴파일하기
   IncludeHandler includeHandler;
@@ -129,7 +132,6 @@ void Dx11GraphicsPSO::SetVertexShader(std::string path, std::vector<D3D11_INPUT_
 }
 void Dx11GraphicsPSO::SetPixelShader(std::string path)
 {
-  auto pxlPath   = std::wstring().assign(path.begin(), path.end());
   auto devicePtr = Dx11EngineManager::instance().GetDevicePtr();
 
   Microsoft::WRL::ComPtr<ID3DBlob> shaderBlob;
@@ -138,7 +140,7 @@ void Dx11GraphicsPSO::SetPixelShader(std::string path)
 #if defined(DEBUG) || defined(_DEBUG)
   compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
-  std::string code = ReadCode(path);
+  std::string code = ReadFile(path);
 
   // 주의: 쉐이더의 시작점의 이름이 "main"인 함수로 지정
   IncludeHandler includeHandler;
@@ -160,7 +162,7 @@ void Dx11GraphicsPSO::SetGeometryShader(std::string path)
 #if defined(DEBUG) || defined(_DEBUG)
   compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
-  std::string code = ReadCode(path);
+  std::string code = ReadFile(path);
 
   // 주의: 쉐이더의 시작점의 이름이 "main"인 함수로 지정
   IncludeHandler includeHandler;
@@ -176,20 +178,6 @@ void Dx11GraphicsPSO::SetHullShader(std::string path)
 }
 void Dx11GraphicsPSO::SetDomainShader(std::string path)
 {
-}
-std::string Dx11GraphicsPSO::ReadCode(std::string path)
-{
-  std::filesystem::path p(path);
-  if (!std::filesystem::exists(p))
-    throw std::exception(ResourceUtils::NotExistMsg("File", path).c_str());
-
-  std::ifstream loader;
-  loader.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-  loader.open(path.c_str());
-  std::stringstream codeStream;
-  codeStream << loader.rdbuf();
-  loader.close();
-  return codeStream.str();
 }
 void Dx11GraphicsPSO::CheckCompile(HRESULT hr, ID3DBlob* errorBlob)
 {
