@@ -30,6 +30,7 @@ public:
   void SetBlendFactor(const float blendFactor[4]);
   void Bind();
 
+  void SetObjectType(EObjectBufferType Type);
   void SetVertexShader(std::string path, std::vector<D3D11_INPUT_ELEMENT_DESC> elements,
                        const std::vector<D3D_SHADER_MACRO> shaderMacros);
   void SetPixelShader(std::string path);

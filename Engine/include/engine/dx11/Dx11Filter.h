@@ -156,7 +156,8 @@ public:
     }
     {
       m_constBuffer->Update();
-      contextPtr->PSSetConstantBuffers(6, 1, m_constBuffer->GetPtr());
+      m_constBuffer->Bind(EConstBufferType::FILTER);
+      // contextPtr->PSSetConstantBuffers(6, 1, m_constBuffer->GetPtr());
     }
     {
       m_pso->Bind();

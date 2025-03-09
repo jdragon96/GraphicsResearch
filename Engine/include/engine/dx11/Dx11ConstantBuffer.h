@@ -32,7 +32,7 @@ public:
     return m_constantBuffer.GetAddressOf();
   }
 
-  void Bind();
+  void Bind(EConstBufferType Type);
 
   void Show();
 

@@ -4,12 +4,13 @@
 class IncludeHandler : public ID3DInclude
 {
 public:
-  HRESULT __stdcall Open(D3D_INCLUDE_TYPE IncludeType, LPCSTR pFileName,
-    LPCVOID pParentData, LPCVOID* ppData, UINT* pBytes) override
+  HRESULT __stdcall Open(D3D_INCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData,
+                         UINT* pBytes) override
   {
-    std::string filePath = "../../resource/dx11/" + std::string(pFileName);
+    std::string   filePath = "../../resource/dx11/" + std::string(pFileName);
     std::ifstream file(filePath, std::ios::binary);
-    if (!file) return E_FAIL;
+    if (!file)
+      return E_FAIL;
 
     file.seekg(0, std::ios::end);
     *pBytes = static_cast<UINT>(file.tellg());
@@ -46,7 +47,18 @@ void Dx11GraphicsPSO::operator=(const Dx11GraphicsPSO& pso)
     m_blendFactor[i] = pso.m_blendFactor[i];
   m_primitiveTopology = pso.m_primitiveTopology;
 }
-
+void Dx11GraphicsPSO::SetObjectType(EObjectBufferType Type)
+{
+  switch (Type)
+  {
+    case EObjectBufferType::TRIANGLE:
+      m_primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+      break;
+    case EObjectBufferType::POINT:
+      m_primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+      break;
+  }
+}
 void Dx11GraphicsPSO::SetBlendFactor(const float blendFactor[4])
 {
   memcpy(m_blendFactor, blendFactor, sizeof(float) * 4);
@@ -55,20 +67,30 @@ void Dx11GraphicsPSO::Bind()
 {
   auto contextPtr = Dx11EngineManager::instance().GetContextPtr();
   contextPtr->IASetPrimitiveTopology(m_primitiveTopology);
+  // Input Layout 바인딩
   if (m_inputLayout)
     contextPtr->IASetInputLayout(this->m_inputLayout.Get());
+
+  // Vertex 셰이더 바인딩
   if (m_vertexShader)
     contextPtr->VSSetShader(this->m_vertexShader.Get(), 0, 0);
   else
     contextPtr->VSSetShader(nullptr, 0, 0);
 
+  // Pixel 셰이더 바인딩
   if (m_pixelShader)
     contextPtr->PSSetShader(this->m_pixelShader.Get(), 0, 0);
   else
     contextPtr->PSSetShader(nullptr, 0, 0);
+
+  // Geometry 셰이더 바인딩
+  if (m_geometryShader)
+    contextPtr->GSSetShader(this->m_geometryShader.Get(), 0, 0);
+  else
+    contextPtr->GSSetShader(nullptr, 0, 0);
 }
 void Dx11GraphicsPSO::SetVertexShader(std::string path, std::vector<D3D11_INPUT_ELEMENT_DESC> elements,
-                                  const std::vector<D3D_SHADER_MACRO> shaderMacros)
+                                      const std::vector<D3D_SHADER_MACRO> shaderMacros)
 {
   auto vtxPath   = std::wstring().assign(path.begin(), path.end());
   auto devicePtr = Dx11EngineManager::instance().GetDevicePtr();
@@ -83,9 +105,8 @@ void Dx11GraphicsPSO::SetVertexShader(std::string path, std::vector<D3D11_INPUT_
 
   // 1. 셰이더 코드 컴파일하기
   IncludeHandler includeHandler;
-  HRESULT hr =
-      D3DCompile(code.c_str(), code.length(), nullptr, shaderMacros.empty() ? NULL : shaderMacros.data(),
-                 &includeHandler, "main", "vs_5_0", compileFlags, 0, &shaderBlob, &errorBlob);
+  HRESULT hr = D3DCompile(code.c_str(), code.length(), nullptr, shaderMacros.empty() ? NULL : shaderMacros.data(),
+                          &includeHandler, "main", "vs_5_0", compileFlags, 0, &shaderBlob, &errorBlob);
   CheckCompile(hr, errorBlob.Get());
 
   // 2. 셰이더 버퍼 생성하기
@@ -121,8 +142,8 @@ void Dx11GraphicsPSO::SetPixelShader(std::string path)
 
   // 주의: 쉐이더의 시작점의 이름이 "main"인 함수로 지정
   IncludeHandler includeHandler;
-  HRESULT hr = D3DCompile(code.c_str(), code.length(), nullptr, nullptr, &includeHandler, "main",
-                          "ps_5_0", compileFlags, 0, &shaderBlob, &errorBlob);
+  HRESULT        hr = D3DCompile(code.c_str(), code.length(), nullptr, nullptr, &includeHandler, "main", "ps_5_0",
+                                 compileFlags, 0, &shaderBlob, &errorBlob);
 
   CheckCompile(hr, errorBlob.Get());
   hr = devicePtr->CreatePixelShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL,
@@ -131,6 +152,24 @@ void Dx11GraphicsPSO::SetPixelShader(std::string path)
 }
 void Dx11GraphicsPSO::SetGeometryShader(std::string path)
 {
+  auto devicePtr = Dx11EngineManager::instance().GetDevicePtr();
+
+  Microsoft::WRL::ComPtr<ID3DBlob> shaderBlob;
+  Microsoft::WRL::ComPtr<ID3DBlob> errorBlob;
+  UINT                             compileFlags = 0;
+#if defined(DEBUG) || defined(_DEBUG)
+  compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+  std::string code = ReadCode(path);
+
+  // 주의: 쉐이더의 시작점의 이름이 "main"인 함수로 지정
+  IncludeHandler includeHandler;
+  HRESULT        hr = D3DCompile(code.c_str(), code.length(), nullptr, nullptr, &includeHandler, "main", "gs_5_0",
+                                 compileFlags, 0, &shaderBlob, &errorBlob);
+  CheckCompile(hr, errorBlob.Get());
+  hr = devicePtr->CreateGeometryShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL,
+                                       &this->m_geometryShader);
+  Dx11EngineManager::Check(hr);
 }
 void Dx11GraphicsPSO::SetHullShader(std::string path)
 {

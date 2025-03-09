@@ -8,6 +8,8 @@
 #include "engine/common/Drawing.h"
 #include "engine/model/CBlinnPhong.h"
 #include "engine/model/CCommon.h"
+#include "engine/model/CBillboardPoint.h"
+#include "engine/model/CBillboardCube.h"
 
 class DrawBlinnPhongRender
 {
@@ -117,7 +119,6 @@ public:
       samplerOption.MaxLOD         = D3D11_FLOAT32_MAX;
       Dx11EngineManager::instance().InitSampler(defaultSampler, samplerOption);
     }
-
     {
       defaultPSO = Dx11GraphicsPSO::MakeShared();
       defaultPSO->SetVertexShader(
@@ -160,6 +161,34 @@ public:
       cubemapPSO->SetPixelShader("../../resource/dx11/CubemapPixelShader.hlsl");
       cubemapPSO->SetObjectType(EObjectBufferType::TRIANGLE);
 
+      auto billboardPSO = Dx11GraphicsPSO::MakeShared();
+      billboardPSO->SetVertexShader(
+          "../../resource/dx11/BillboardVertex.hlsl",
+          {
+              { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+              { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(float) * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+              { "TEXTURECOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(float) * 7, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+              { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float) * 9, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+          },
+          std::vector<D3D_SHADER_MACRO>{ { "SKINNED", "0" }, { NULL, NULL } });
+      billboardPSO->SetPixelShader("../../resource/dx11/BillboardPixel.hlsl");
+      billboardPSO->SetGeometryShader("../../resource/dx11/BillboardGeometryPoint.hlsl");
+      billboardPSO->SetObjectType(EObjectBufferType::POINT);
+
+      auto billboardCubePSO = Dx11GraphicsPSO::MakeShared();
+      billboardCubePSO->SetVertexShader(
+          "../../resource/dx11/BillboardVertex.hlsl",
+          {
+              { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+              { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(float) * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+              { "TEXTURECOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(float) * 7, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+              { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float) * 9, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+          },
+          std::vector<D3D_SHADER_MACRO>{ { "SKINNED", "0" }, { NULL, NULL } });
+      billboardCubePSO->SetPixelShader("../../resource/dx11/BillboardPixel.hlsl");
+      billboardCubePSO->SetGeometryShader("../../resource/dx11/BillboardGeometryCube.hlsl");
+      billboardCubePSO->SetObjectType(EObjectBufferType::POINT);
+
       BackgroundBuffer = Dx11MeshBuffer<VertexData>::MakeShared();
       BackgroundBuffer->SetPSO(cubemapPSO);
       auto bgMesh = MakeSphere(Vec3(0, 0, 0), 100.f, 20, 20);
@@ -170,12 +199,44 @@ public:
       BackgroundBuffer->SetObjectType(ObjectType::CHARACTER);
       BackgroundBuffer->UseSimulation(false);
       BackgroundBuffer->Initialize();
+
+      {
+        BillboardPointBuffer = Dx11MeshBuffer<VertexData>::MakeShared();
+        BillboardPointBuffer->SetPSO(billboardPSO);
+        MeshData<VertexData> BillboardPoint;
+        VertexData           Point;
+        Point.SetPosition(0, 0, 3);
+        BillboardPoint.vertices.push_back(Point);
+        BillboardPoint.indices.push_back({ 0 });
+        BillboardPointBuffer->SetTexture({ texturePtr });
+        BillboardPointBuffer->SetMesh(BillboardPoint);
+        BillboardPointBuffer->UseSimulation(false);
+        BillboardPointBuffer->Initialize();
+      }
+
+      {
+        BillboardCubeBuffer = Dx11MeshBuffer<VertexData>::MakeShared();
+        BillboardCubeBuffer->SetPSO(billboardCubePSO);
+        MeshData<VertexData> BillboardPoint;
+        VertexData           Point;
+        Point.SetPosition(0, 0, 5);
+        BillboardPoint.vertices.push_back(Point);
+        BillboardPoint.indices.push_back({ 0 });
+        BillboardCubeBuffer->SetTexture({ texturePtr });
+        BillboardCubeBuffer->SetMesh(BillboardPoint);
+        BillboardCubeBuffer->UseSimulation(false);
+        BillboardCubeBuffer->Initialize();
+      }
     }
     {
       commonBuffer = Dx11ConstantBuffer<CCommon>::MakeShared();
       commonBuffer->Initialize();
       blinnPhongBuffer = Dx11ConstantBuffer<CBlinnPhong>::MakeShared();
       blinnPhongBuffer->Initialize();
+      billboardBuffer = Dx11ConstantBuffer<CBillboardPoint>::MakeShared();
+      billboardBuffer->Initialize();
+      BillboardCubeConstBuffer = Dx11ConstantBuffer<CBillboardCube>::MakeShared();
+      BillboardCubeConstBuffer->Initialize();
     }
     Dx11EngineManager::instance().InitImGui();
   }
@@ -190,30 +251,6 @@ public:
     blinnPhongBuffer->m_bufferData.mat.shininess      = 0.0;
     blinnPhongBuffer->m_bufferData.mat.specular       = Vec3(1, 1, 1);
     blinnPhongBuffer->m_bufferData.mat.specularFactor = 1.3;
-
-    copyFilter = std::make_shared<Dx11Filter>("../../resource/dx11/FilterVertexShader.hlsl",
-                                              "../../resource/dx11/CopyPixelShader.hlsl", 1280, 800);
-    copyFilter->SetShaderResource({ backbufferSRV });
-    filter0 = std::make_shared<Dx11Filter>("../../resource/dx11/FilterVertexShader.hlsl",
-                                           "../../resource/dx11/ThresholdPixelShader.hlsl", 1280, 800);
-    filter0->SetShaderResource({ backbufferSRV });
-    filter1 = std::make_shared<Dx11Filter>("../../resource/dx11/FilterVertexShader.hlsl",
-                                           "../../resource/dx11/BlurXPixelShader.hlsl", 1280, 800);
-    filter1->SetShaderResource({ filter0->m_shaderResourceView });
-    filter2 = std::make_shared<Dx11Filter>("../../resource/dx11/FilterVertexShader.hlsl",
-                                           "../../resource/dx11/BlurYPixelShader.hlsl", 1280, 800);
-    filter2->SetShaderResource({ filter1->m_shaderResourceView });
-    filter3 = std::make_shared<Dx11Filter>("../../resource/dx11/FilterVertexShader.hlsl",
-                                           "../../resource/dx11/BlurXPixelShader.hlsl", 640, 400);
-    filter3->SetShaderResource({ filter2->m_shaderResourceView });
-    filter4 = std::make_shared<Dx11Filter>("../../resource/dx11/FilterVertexShader.hlsl",
-                                           "../../resource/dx11/BlurYPixelShader.hlsl", 640, 400);
-    filter4->SetShaderResource({ filter3->m_shaderResourceView });
-
-    filter5 = std::make_shared<Dx11Filter>("../../resource/dx11/FilterVertexShader.hlsl",
-                                           "../../resource/dx11/CombinePixelShader.hlsl", 1280, 800);
-    filter5->SetShaderResource({ copyFilter->m_shaderResourceView, filter4->m_shaderResourceView });
-    filter5->SetRenderTarget({ backbufferRTV });
 
     Dx11EngineManager::instance().imguiFunc = [&]() {
       //
@@ -238,19 +275,25 @@ public:
       blinnPhongBuffer->m_bufferData.eyeWorld = mainCamera->GetCameraPos();
       blinnPhongBuffer->Update();
       blinnPhongBuffer->Bind(EConstBufferType::PIXEL);
-      // contextPtr->VSSetConstantBuffers(0, 1, commonBuffer->GetPtr());
-      // contextPtr->PSSetConstantBuffers(5, 1, blinnPhongBuffer->GetPtr());
 
       // 2.
       BackgroundBuffer->Render();
       cubeBuffer->Render();
-      copyFilter->Render();
-      filter0->Render();
-      filter1->Render();
-      filter2->Render();
-      filter3->Render();
-      filter4->Render();
-      filter5->Render();
+      {
+        billboardBuffer->m_bufferData.viewGeom = mainCamera->GetViewMatPtr()->transpose();
+        billboardBuffer->m_bufferData.projGeom = mainCamera->GetProjMatPtr()->transpose();
+        billboardBuffer->Update();
+        billboardBuffer->Bind(EConstBufferType::GEOMETRY);
+        BillboardPointBuffer->Render();
+      }
+      {
+        BillboardCubeConstBuffer->m_bufferData.viewGeom = mainCamera->GetViewMatPtr()->transpose();
+        BillboardCubeConstBuffer->m_bufferData.projGeom = mainCamera->GetProjMatPtr()->transpose();
+        BillboardCubeConstBuffer->m_bufferData.length   = 1.f;
+        BillboardCubeConstBuffer->Update();
+        BillboardCubeConstBuffer->Bind(EConstBufferType::GEOMETRY);
+        BillboardCubeBuffer->Render();
+      }
     };
 
     Dx11EngineManager::instance().Run();
@@ -258,11 +301,15 @@ public:
 
   Dx11GraphicsPSO::SharedPtr defaultPSO;
 
-  Dx11ConstantBuffer<CCommon>::SharedPtr     commonBuffer;
-  Dx11ConstantBuffer<CBlinnPhong>::SharedPtr blinnPhongBuffer;
+  Dx11ConstantBuffer<CCommon>::SharedPtr         commonBuffer;
+  Dx11ConstantBuffer<CBlinnPhong>::SharedPtr     blinnPhongBuffer;
+  Dx11ConstantBuffer<CBillboardPoint>::SharedPtr billboardBuffer;
+  Dx11ConstantBuffer<CBillboardCube>::SharedPtr  BillboardCubeConstBuffer;
 
   Dx11MeshBuffer<VertexData>::SharedPtr cubeBuffer;
   Dx11MeshBuffer<VertexData>::SharedPtr BackgroundBuffer;
+  Dx11MeshBuffer<VertexData>::SharedPtr BillboardPointBuffer;
+  Dx11MeshBuffer<VertexData>::SharedPtr BillboardCubeBuffer;
 
   CameraBuffer::SharedPtr                          mainCamera;
   Microsoft::WRL::ComPtr<ID3D11RenderTargetView>   backbufferRTV;
@@ -273,14 +320,6 @@ public:
   Microsoft::WRL::ComPtr<ID3D11RasterizerState>    defaultRS;
   Microsoft::WRL::ComPtr<ID3D11DepthStencilState>  defaultDSS;
   Microsoft::WRL::ComPtr<ID3D11SamplerState>       defaultSampler;
-
-  std::shared_ptr<Dx11Filter> copyFilter;
-  std::shared_ptr<Dx11Filter> filter0;
-  std::shared_ptr<Dx11Filter> filter1;
-  std::shared_ptr<Dx11Filter> filter2;
-  std::shared_ptr<Dx11Filter> filter3;
-  std::shared_ptr<Dx11Filter> filter4;
-  std::shared_ptr<Dx11Filter> filter5;
 };
 
 void main()

@@ -76,8 +76,33 @@ void Dx11ConstantBuffer<T>::Update()
 }
 
 template <typename T>
-void Dx11ConstantBuffer<T>::Bind()
+void Dx11ConstantBuffer<T>::Bind(EConstBufferType Type)
 {
+  /**
+   * 0 : vertex 공통 데이터
+   * 5 : pixel 공통 데이터
+   * 6 : Filtering 데이터
+   * 7 : Gemoetry 공통 데이터
+   */
+  auto ctxPtr = Dx11EngineManager::instance().GetContextPtr();
+  switch (Type)
+  {
+    case EConstBufferType::VERTEX_GLOBAL:
+      ctxPtr->VSSetConstantBuffers(0, 1, m_constantBuffer.GetAddressOf());
+      break;
+    case EConstBufferType::VERTEX_MODEL:
+      ctxPtr->VSSetConstantBuffers(1, 1, m_constantBuffer.GetAddressOf());
+      break;
+    case EConstBufferType::PIXEL:
+      ctxPtr->PSSetConstantBuffers(5, 1, m_constantBuffer.GetAddressOf());
+      break;
+    case EConstBufferType::FILTER:
+      ctxPtr->PSSetConstantBuffers(6, 1, m_constantBuffer.GetAddressOf());
+      break;
+    case EConstBufferType::GEOMETRY:
+      ctxPtr->GSSetConstantBuffers(7, 1, m_constantBuffer.GetAddressOf());
+      break;
+  }
 }
 
 template <typename T>

@@ -72,6 +72,12 @@
     <ClCompile Include="include\engine\model\CFilter.cpp">
       <Filter>model</Filter>
     </ClCompile>
+    <ClCompile Include="include\engine\model\CBillboardPoint.cpp">
+      <Filter>model</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\model\CBillboardCube.cpp">
+      <Filter>model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\engine\dx11\Dx11ConstantBuffer.h">
@@ -151,6 +157,12 @@
       <Filter>dx11</Filter>
     </ClInclude>
     <ClInclude Include="include\engine\model\CFilter.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\model\CBillboardPoint.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\model\CBillboardCube.h">
       <Filter>model</Filter>
     </ClInclude>
   </ItemGroup>

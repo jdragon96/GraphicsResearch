@@ -64,3 +64,18 @@ enum class MouseButtonType
   RIGHT,
   SCROLL,
 };
+
+enum class EConstBufferType
+{
+  GEOMETRY,
+  PIXEL,
+  VERTEX_GLOBAL,
+  VERTEX_MODEL,
+  FILTER
+};
+
+enum class EObjectBufferType
+{
+  POINT,
+  TRIANGLE,
+};
