@@ -84,6 +84,9 @@
     <ClCompile Include="include\engine\opengl\glEngineManager.cpp">
       <Filter>opengl</Filter>
     </ClCompile>
+    <ClCompile Include="include\engine\model\CGlobalPixel.cpp">
+      <Filter>model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\engine\dx11\Dx11ConstantBuffer.h">
@@ -191,6 +194,9 @@
     </ClInclude>
     <ClInclude Include="include\engine\interface\EngineBase.h">
       <Filter>interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\model\CGlobalPixel.h">
+      <Filter>model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

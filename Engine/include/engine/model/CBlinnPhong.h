@@ -27,8 +27,8 @@ class CBlinnPhong
 public:
 	Light    light;
 	Material mat;
-	Vec3     eyeWorld;
-	float    dummy1;
+	//Vec3     eyeWorld;
+	//float    dummy1;
 	int      useBP;
 	int      useAmbient = 0;
   int      useDiffuse = 0;
@@ -37,7 +37,7 @@ public:
 	void Render()
 	{
 		ImGui::SetNextItemOpen(false, ImGuiCond_Once);
-		ImGui::SliderFloat3("eyeWorld", &eyeWorld.x(), -100.f, 100.f);
+		//ImGui::SliderFloat3("eyeWorld", &eyeWorld.x(), -100.f, 100.f);
 		if (ImGui::TreeNode("Light"))
 		{
 			ImGui::SliderFloat3("Position", &light.position.x(), -10.f, 10.f);

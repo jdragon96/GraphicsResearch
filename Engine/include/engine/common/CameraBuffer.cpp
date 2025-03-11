@@ -94,6 +94,14 @@ Vec3 CameraBuffer::GetCameraPos()
 {
   return m_camPosition;
 }
+Vec3 CameraBuffer::GetUpVector()
+{
+  return m_upVector;
+}
+Vec3 CameraBuffer::GetRightVector()
+{
+  return m_rightVector;
+}
 Vec3 CameraBuffer::GetFrontVector()
 {
   return m_frontVector;

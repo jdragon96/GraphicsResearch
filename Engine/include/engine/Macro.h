@@ -68,6 +68,7 @@ enum class MouseButtonType
 enum class EConstBufferType
 {
   GEOMETRY,
+  PIXEL_GLOBAL,
   PIXEL,
   VERTEX_GLOBAL,
   VERTEX_MODEL,

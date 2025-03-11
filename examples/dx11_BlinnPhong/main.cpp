@@ -8,6 +8,7 @@
 #include "engine/common/Drawing.h"
 #include "engine/model/CBlinnPhong.h"
 #include "engine/model/CCommon.h"
+#include "engine/model/CGlobalPixel.h"
 
 class DrawBlinnPhongRender
 {
@@ -176,6 +177,8 @@ public:
       commonBuffer->Initialize(EConstBufferType::VERTEX_GLOBAL);
       blinnPhongBuffer = Dx11ConstantBuffer<CBlinnPhong>::MakeShared();
       blinnPhongBuffer->Initialize(EConstBufferType::PIXEL);
+      pixelGlobalConstBuffer = Dx11ConstantBuffer<CGlobalPixel>::MakeShared();
+      pixelGlobalConstBuffer->Initialize(EConstBufferType::PIXEL_GLOBAL);
     }
     Dx11EngineManager::instance().InitImGui();
   }
@@ -217,6 +220,7 @@ public:
 
     Dx11EngineManager::instance().imguiFunc = [&]() {
       //
+      pixelGlobalConstBuffer->Show();
       blinnPhongBuffer->Show();
     };
     Dx11EngineManager::instance().renderFunc = [&]() {
@@ -235,7 +239,9 @@ public:
       commonBuffer->m_bufferData.projection = mainCamera->GetProjMatPtr()->transpose();
       commonBuffer->Update();
       commonBuffer->Bind();
-      blinnPhongBuffer->m_bufferData.eyeWorld = mainCamera->GetCameraPos();
+      pixelGlobalConstBuffer->m_bufferData.eyeWorld = mainCamera->GetCameraPos();
+      pixelGlobalConstBuffer->Update();
+      pixelGlobalConstBuffer->Bind();
       blinnPhongBuffer->Update();
       blinnPhongBuffer->Bind();
       // contextPtr->VSSetConstantBuffers(0, 1, commonBuffer->GetPtr());
@@ -258,8 +264,9 @@ public:
 
   Dx11GraphicsPSO::SharedPtr defaultPSO;
 
-  Dx11ConstantBuffer<CCommon>::SharedPtr     commonBuffer;
-  Dx11ConstantBuffer<CBlinnPhong>::SharedPtr blinnPhongBuffer;
+  Dx11ConstantBuffer<CCommon>::SharedPtr      commonBuffer;
+  Dx11ConstantBuffer<CBlinnPhong>::SharedPtr  blinnPhongBuffer;
+  Dx11ConstantBuffer<CGlobalPixel>::SharedPtr pixelGlobalConstBuffer;
 
   Dx11MeshBuffer<VertexData>::SharedPtr cubeBuffer;
   Dx11MeshBuffer<VertexData>::SharedPtr BackgroundBuffer;

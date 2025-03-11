@@ -64,6 +64,12 @@ cbuffer VertexConstantData: register(b1)
     float3 dumyy1;
 }
 
+cbuffer GlobalPixelConst : register(b2)
+{
+  float3     eyeWorld;
+  float      time;
+}
+
 
 /////////////////////////////////////////////// Blinn phong shader
 struct Light
@@ -88,8 +94,6 @@ cbuffer PixelConstBuffer : register(b5)
 {
   Light    light;
   Material mat;
-  float3     eyeWorld;
-  float      dummy1;
   int      useBP;
   int      useAmbient;
   int      useDiffuse;
