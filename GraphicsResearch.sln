@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "billboard", "examples\billb
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{1710B7C2-B543-47CB-9218-4EDB51C903F1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "textures", "examples\textures\textures.vcxproj", "{10ED8EA3-92E7-43A2-A1A2-0D8119FCC59A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -49,6 +51,14 @@ Global
 		{6155124B-9031-48E1-A392-0CFD35A2AF8D}.Release|x64.Build.0 = Release|x64
 		{6155124B-9031-48E1-A392-0CFD35A2AF8D}.Release|x86.ActiveCfg = Release|Win32
 		{6155124B-9031-48E1-A392-0CFD35A2AF8D}.Release|x86.Build.0 = Release|Win32
+		{10ED8EA3-92E7-43A2-A1A2-0D8119FCC59A}.Debug|x64.ActiveCfg = Debug|x64
+		{10ED8EA3-92E7-43A2-A1A2-0D8119FCC59A}.Debug|x64.Build.0 = Debug|x64
+		{10ED8EA3-92E7-43A2-A1A2-0D8119FCC59A}.Debug|x86.ActiveCfg = Debug|Win32
+		{10ED8EA3-92E7-43A2-A1A2-0D8119FCC59A}.Debug|x86.Build.0 = Debug|Win32
+		{10ED8EA3-92E7-43A2-A1A2-0D8119FCC59A}.Release|x64.ActiveCfg = Release|x64
+		{10ED8EA3-92E7-43A2-A1A2-0D8119FCC59A}.Release|x64.Build.0 = Release|x64
+		{10ED8EA3-92E7-43A2-A1A2-0D8119FCC59A}.Release|x86.ActiveCfg = Release|Win32
+		{10ED8EA3-92E7-43A2-A1A2-0D8119FCC59A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,6 +66,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{78363D0F-B5F6-45A8-9451-F3F9FF4DC359} = {1710B7C2-B543-47CB-9218-4EDB51C903F1}
 		{6155124B-9031-48E1-A392-0CFD35A2AF8D} = {1710B7C2-B543-47CB-9218-4EDB51C903F1}
+		{10ED8EA3-92E7-43A2-A1A2-0D8119FCC59A} = {1710B7C2-B543-47CB-9218-4EDB51C903F1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2645D2D8-A48D-47E6-9535-598B39DB047C}

@@ -11,6 +11,7 @@
 #include "engine/model/CBillboardPoint.h"
 #include "engine/model/CBillboardCube.h"
 #include "engine/model/CGlobalPixel.h"
+#include "CTextures.h"
 
 class DrawBlinnPhongRender
 {
@@ -131,13 +132,15 @@ public:
               { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float) * 9, D3D11_INPUT_PER_VERTEX_DATA, 0 },
           },
           std::vector<D3D_SHADER_MACRO>{ { "SKINNED", "0" }, { NULL, NULL } });
-      defaultPSO->SetPixelShader("../../resource/dx11/BlinnPhongReflect.hlsl");
+      defaultPSO->SetPixelShader("../../resource/dx11/TexturePixelShader.hlsl");
     }
 
     // 3. 매쉬 버퍼 생성하기
     {
+      auto StagingTexture = Dx11TextureBuffer::MakeShared();
+      StagingTexture->CreateStagingTexture("../../resource/world.jpg", 0, 1);
       auto earthTexturePtr = Dx11TextureBuffer::MakeShared();
-      earthTexturePtr->CreateShaderResourceTexture("../../resource/world.jpg");
+      earthTexturePtr->CreateMipmapTexture(StagingTexture);
       auto texturePtr = Dx11TextureBuffer::MakeShared();
       texturePtr->LoadDDS("../../resource/skybox.dds");
 
@@ -162,34 +165,6 @@ public:
       cubemapPSO->SetPixelShader("../../resource/dx11/CubemapPixelShader.hlsl");
       cubemapPSO->SetObjectType(EObjectBufferType::TRIANGLE);
 
-      auto billboardPSO = Dx11GraphicsPSO::MakeShared();
-      billboardPSO->SetVertexShader(
-          "../../resource/dx11/BillboardVertex.hlsl",
-          {
-              { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-              { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(float) * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-              { "TEXTURECOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(float) * 7, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-              { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float) * 9, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-          },
-          std::vector<D3D_SHADER_MACRO>{ { "SKINNED", "0" }, { NULL, NULL } });
-      billboardPSO->SetPixelShader("../../resource/dx11/BillboardStarPixel.hlsl");
-      billboardPSO->SetGeometryShader("../../resource/dx11/BillboardGeometrySquare.hlsl");
-      billboardPSO->SetObjectType(EObjectBufferType::POINT);
-
-      auto billboardCubePSO = Dx11GraphicsPSO::MakeShared();
-      billboardCubePSO->SetVertexShader(
-          "../../resource/dx11/BillboardVertex.hlsl",
-          {
-              { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-              { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(float) * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-              { "TEXTURECOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(float) * 7, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-              { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float) * 9, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-          },
-          std::vector<D3D_SHADER_MACRO>{ { "SKINNED", "0" }, { NULL, NULL } });
-      billboardCubePSO->SetPixelShader("../../resource/dx11/BillboardPixel.hlsl");
-      billboardCubePSO->SetGeometryShader("../../resource/dx11/BillboardGeometryCube.hlsl");
-      billboardCubePSO->SetObjectType(EObjectBufferType::POINT);
-
       BackgroundBuffer = Dx11MeshBuffer<VertexData>::MakeShared();
       BackgroundBuffer->SetPSO(cubemapPSO);
       auto bgMesh = MakeSphere(Vec3(0, 0, 0), 100.f, 20, 20);
@@ -200,60 +175,16 @@ public:
       BackgroundBuffer->SetObjectType(ObjectType::CHARACTER);
       BackgroundBuffer->UseSimulation(false);
       BackgroundBuffer->Initialize();
-
-      {
-        BillboardPointBuffer = Dx11MeshBuffer<VertexData>::MakeShared();
-        BillboardPointBuffer->SetPSO(billboardPSO);
-        MeshData<VertexData> BillboardPoint;
-        VertexData           Point;
-        Point.SetPosition(0, 0, -5);
-        BillboardPoint.vertices.push_back(Point);
-        BillboardPoint.indices.push_back({ 0 });
-        BillboardPointBuffer->SetTexture({ texturePtr });
-        BillboardPointBuffer->SetMesh(BillboardPoint);
-        BillboardPointBuffer->UseSimulation(false);
-        BillboardPointBuffer->Initialize();
-      }
-
-      {
-        BillboardCubeBuffer = Dx11MeshBuffer<VertexData>::MakeShared();
-        BillboardCubeBuffer->SetPSO(billboardCubePSO);
-        MeshData<VertexData> BillboardPoint;
-        VertexData           Point;
-        Point.SetPosition(0, 0, 5);
-        BillboardPoint.vertices.push_back(Point);
-        BillboardPoint.indices.push_back({ 0 });
-        BillboardCubeBuffer->SetTexture({ texturePtr });
-        BillboardCubeBuffer->SetMesh(BillboardPoint);
-        BillboardCubeBuffer->UseSimulation(false);
-        BillboardCubeBuffer->Initialize();
-      }
-
-      {
-        BillboardSquareBuffer = Dx11MeshBuffer<VertexData>::MakeShared();
-        BillboardSquareBuffer->SetPSO(billboardCubePSO);
-        MeshData<VertexData> BillboardPoint;
-        VertexData           Point;
-        Point.SetPosition(0, 0, 10);
-        BillboardPoint.vertices.push_back(Point);
-        BillboardPoint.indices.push_back({ 0 });
-        BillboardSquareBuffer->SetTexture({ texturePtr });
-        BillboardSquareBuffer->SetMesh(BillboardPoint);
-        BillboardSquareBuffer->UseSimulation(false);
-        BillboardSquareBuffer->Initialize();
-      }
     }
     {
       commonBuffer = Dx11ConstantBuffer<CCommon>::MakeShared();
       commonBuffer->Initialize(EConstBufferType::VERTEX_GLOBAL);
       blinnPhongBuffer = Dx11ConstantBuffer<CBlinnPhong>::MakeShared();
       blinnPhongBuffer->Initialize(EConstBufferType::PIXEL);
-      billboardBuffer = Dx11ConstantBuffer<CBillboardPoint>::MakeShared();
-      billboardBuffer->Initialize(EConstBufferType::GEOMETRY);
-      BillboardCubeConstBuffer = Dx11ConstantBuffer<CBillboardCube>::MakeShared();
-      BillboardCubeConstBuffer->Initialize(EConstBufferType::GEOMETRY);
       GlobalPixelConstBuffer = Dx11ConstantBuffer<CGlobalPixel>::MakeShared();
       GlobalPixelConstBuffer->Initialize(EConstBufferType::PIXEL_GLOBAL);
+      texturePixelConstBuffer = Dx11ConstantBuffer<CTextures>::MakeShared();
+      texturePixelConstBuffer->Initialize(EConstBufferType::PIXEL);
     }
     Dx11EngineManager::instance().InitImGui();
   }
@@ -270,7 +201,7 @@ public:
     blinnPhongBuffer->m_bufferData.mat.specularFactor = 1.3;
 
     Dx11EngineManager::instance().imguiFunc = [&]() {
-      GlobalPixelConstBuffer->Show();
+      texturePixelConstBuffer->Show();
       blinnPhongBuffer->Show();
     };
     Dx11EngineManager::instance().renderFunc = [&]() {
@@ -285,57 +216,35 @@ public:
       contextPtr->PSSetSamplers(0, 1, defaultSampler.GetAddressOf());
 
       // 1. 공유 상수버퍼 갱신
+      // GlobalPixelConstBuffer->m_bufferData.eyeWorld = mainCamera->GetCameraPos();
+      // GlobalPixelConstBuffer->m_bufferData.time += ImGui::GetIO().DeltaTime;
+      // GlobalPixelConstBuffer->Update();
+      // GlobalPixelConstBuffer->Bind();
       commonBuffer->m_bufferData.view       = mainCamera->GetViewMatPtr()->transpose();
       commonBuffer->m_bufferData.projection = mainCamera->GetProjMatPtr()->transpose();
       commonBuffer->Update();
       commonBuffer->Bind();
-      GlobalPixelConstBuffer->m_bufferData.eyeWorld = mainCamera->GetCameraPos();
-      GlobalPixelConstBuffer->m_bufferData.time += ImGui::GetIO().DeltaTime;
-      GlobalPixelConstBuffer->Update();
-      GlobalPixelConstBuffer->Bind();
       blinnPhongBuffer->Update();
       blinnPhongBuffer->Bind();
-
+      texturePixelConstBuffer->Update();
+      texturePixelConstBuffer->Bind();
       // 2.
       BackgroundBuffer->Render();
       cubeBuffer->Render();
-      {
-        billboardBuffer->m_bufferData.viewGeom    = mainCamera->GetViewMatPtr()->transpose();
-        billboardBuffer->m_bufferData.projGeom    = mainCamera->GetProjMatPtr()->transpose();
-        billboardBuffer->m_bufferData.eyeWorldPos = mainCamera->GetCameraPos();
-        billboardBuffer->m_bufferData.eyeUpVector = mainCamera->GetUpVector();
-        billboardBuffer->Update();
-        billboardBuffer->Bind();
-        BillboardPointBuffer->Render();
-      }
-      {
-        BillboardCubeConstBuffer->m_bufferData.viewGeom = mainCamera->GetViewMatPtr()->transpose();
-        BillboardCubeConstBuffer->m_bufferData.projGeom = mainCamera->GetProjMatPtr()->transpose();
-        BillboardCubeConstBuffer->m_bufferData.length   = 1.f;
-        BillboardCubeConstBuffer->Update();
-        BillboardCubeConstBuffer->Bind();
-        BillboardCubeBuffer->Render();
-      }
     };
 
     Dx11EngineManager::instance().Run();
   }
 
-  Dx11GraphicsPSO::SharedPtr defaultPSO;
+  Dx11GraphicsPSO::SharedPtr                  defaultPSO;
+  Dx11ConstantBuffer<CCommon>::SharedPtr      commonBuffer;
+  Dx11ConstantBuffer<CBlinnPhong>::SharedPtr  blinnPhongBuffer;
+  Dx11ConstantBuffer<CGlobalPixel>::SharedPtr GlobalPixelConstBuffer;
+  Dx11ConstantBuffer<CTextures>::SharedPtr    texturePixelConstBuffer;
+  Dx11MeshBuffer<VertexData>::SharedPtr       cubeBuffer;
+  Dx11MeshBuffer<VertexData>::SharedPtr       BackgroundBuffer;
+  CameraBuffer::SharedPtr                     mainCamera;
 
-  Dx11ConstantBuffer<CCommon>::SharedPtr         commonBuffer;
-  Dx11ConstantBuffer<CBlinnPhong>::SharedPtr     blinnPhongBuffer;
-  Dx11ConstantBuffer<CBillboardPoint>::SharedPtr billboardBuffer;
-  Dx11ConstantBuffer<CBillboardCube>::SharedPtr  BillboardCubeConstBuffer;
-  Dx11ConstantBuffer<CGlobalPixel>::SharedPtr    GlobalPixelConstBuffer;
-
-  Dx11MeshBuffer<VertexData>::SharedPtr cubeBuffer;
-  Dx11MeshBuffer<VertexData>::SharedPtr BackgroundBuffer;
-  Dx11MeshBuffer<VertexData>::SharedPtr BillboardPointBuffer;
-  Dx11MeshBuffer<VertexData>::SharedPtr BillboardCubeBuffer;
-  Dx11MeshBuffer<VertexData>::SharedPtr BillboardSquareBuffer;
-
-  CameraBuffer::SharedPtr                          mainCamera;
   Microsoft::WRL::ComPtr<ID3D11RenderTargetView>   backbufferRTV;
   Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> backbufferSRV;
   Microsoft::WRL::ComPtr<ID3D11RenderTargetView>   PostProcessingBuffer;

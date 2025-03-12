@@ -1,5 +1,15 @@
 #include "Common.hlsli"
 
+cbuffer PixelConstBuffer : register(b5)
+{
+  Light    light;
+  Material mat;
+  int      useBP;
+  int      useAmbient;
+  int      useDiffuse;
+  int      useTexture;
+}
+
 Texture2D g_baseTexture : register(t0);
 TextureCube g_textureCube0 : register(t1);
 SamplerState g_sampler : register(s0);
@@ -66,12 +76,9 @@ float4 main(PSInput input) : SV_TARGET
   }
 
   // 4. fresnel effect
-  
 
   // 5. environment mapping
-  
   float4 blinnphong = float4(ambientColor + diffuseColor + specularColor, 1);
   float4 envMap = g_textureCube0.Sample(g_sampler, reflect(-toEye, input.normalWorld));
-
   return envMap + blinnphong;
 }

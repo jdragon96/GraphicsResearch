@@ -90,16 +90,6 @@ struct Material
     float specularFactor;
 };
 
-cbuffer PixelConstBuffer : register(b5)
-{
-  Light    light;
-  Material mat;
-  int      useBP;
-  int      useAmbient;
-  int      useDiffuse;
-  int      useTexture;
-}
-
 cbuffer FilterConstBuffer: register(b6)
 {
   float dx;

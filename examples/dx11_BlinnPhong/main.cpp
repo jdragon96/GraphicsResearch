@@ -136,7 +136,7 @@ public:
     // 3. 매쉬 버퍼 생성하기
     {
       auto earthTexturePtr = Dx11TextureBuffer::MakeShared();
-      earthTexturePtr->LoadJPG("../../resource/world.jpg");
+      earthTexturePtr->CreateShaderResourceTexture("../../resource/world.jpg");
       auto texturePtr = Dx11TextureBuffer::MakeShared();
       texturePtr->LoadDDS("../../resource/skybox.dds");
 

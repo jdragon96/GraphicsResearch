@@ -1,5 +1,15 @@
 #include "Common.hlsli"
 
+cbuffer PixelConstBuffer : register(b5)
+{
+  Light    light;
+  Material mat;
+  int      useBP;
+  int      useAmbient;
+  int      useDiffuse;
+  int      useTexture;
+}
+
 float diffuseFactor(float3 toLight, float3 normal)
 {
   return max(dot(toLight, normal), 0.f);
