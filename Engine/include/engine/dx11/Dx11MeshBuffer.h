@@ -47,14 +47,17 @@ public:
 
   void Initialize();
 
-  void SetTexture(std::vector<Dx11TextureBuffer::SharedPtr> buffer);
+  void SetPixelTexture(std::vector<Dx11TextureBuffer::SharedPtr> buffer);
+
+  void SetVertexTexture(std::vector<Dx11TextureBuffer::SharedPtr> buffer);
 
   void Render();
 
   MeshData<T>                               m_mesh;
   Dx11GraphicsPSO::SharedPtr                m_pso;
   Dx11ConstantBuffer<CMesh>::SharedPtr      m_constBuffer;
-  std::vector<Dx11TextureBuffer::SharedPtr> m_textureBuffer;
+  std::vector<Dx11TextureBuffer::SharedPtr> m_pixelTextureBuffer;
+  std::vector<Dx11TextureBuffer::SharedPtr> m_vertexTextureBuffer;
 
   Microsoft::WRL::ComPtr<ID3D11Buffer> m_vertexBuffer;
   Microsoft::WRL::ComPtr<ID3D11Buffer> m_indexBuffer;

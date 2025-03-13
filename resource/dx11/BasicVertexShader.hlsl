@@ -2,7 +2,6 @@
 
 PSInput main(VSInput input)
 {
-
     PSInput output;
     float4 pos = float4(input.vertexPos, 1.0f);
     pos = mul(pos, world);

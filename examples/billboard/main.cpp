@@ -146,7 +146,7 @@ public:
       cubeBuffer->SetMesh(MakeSphere(Vec3(1, 0, 0), 1.f, 20, 20));
       cubeBuffer->SetObjectType(ObjectType::CHARACTER);
       cubeBuffer->UseSimulation(false);
-      cubeBuffer->SetTexture({ earthTexturePtr, texturePtr });
+      cubeBuffer->SetPixelTexture({ earthTexturePtr, texturePtr });
       cubeBuffer->Initialize();
 
       auto cubemapPSO = Dx11GraphicsPSO::MakeShared();
@@ -195,7 +195,7 @@ public:
       auto bgMesh = MakeSphere(Vec3(0, 0, 0), 100.f, 20, 20);
       // D3D11_CULL_MODE::D3D11_CULL_NONE으로 텍스쳐를 뒤집을 수 있음
       std::reverse(bgMesh.indices.begin(), bgMesh.indices.end());
-      BackgroundBuffer->SetTexture({ texturePtr });
+      BackgroundBuffer->SetPixelTexture({ texturePtr });
       BackgroundBuffer->SetMesh(bgMesh);
       BackgroundBuffer->SetObjectType(ObjectType::CHARACTER);
       BackgroundBuffer->UseSimulation(false);
@@ -209,7 +209,7 @@ public:
         Point.SetPosition(0, 0, -5);
         BillboardPoint.vertices.push_back(Point);
         BillboardPoint.indices.push_back({ 0 });
-        BillboardPointBuffer->SetTexture({ texturePtr });
+        BillboardPointBuffer->SetPixelTexture({ texturePtr });
         BillboardPointBuffer->SetMesh(BillboardPoint);
         BillboardPointBuffer->UseSimulation(false);
         BillboardPointBuffer->Initialize();
@@ -223,7 +223,7 @@ public:
         Point.SetPosition(0, 0, 5);
         BillboardPoint.vertices.push_back(Point);
         BillboardPoint.indices.push_back({ 0 });
-        BillboardCubeBuffer->SetTexture({ texturePtr });
+        BillboardCubeBuffer->SetPixelTexture({ texturePtr });
         BillboardCubeBuffer->SetMesh(BillboardPoint);
         BillboardCubeBuffer->UseSimulation(false);
         BillboardCubeBuffer->Initialize();
@@ -237,7 +237,7 @@ public:
         Point.SetPosition(0, 0, 10);
         BillboardPoint.vertices.push_back(Point);
         BillboardPoint.indices.push_back({ 0 });
-        BillboardSquareBuffer->SetTexture({ texturePtr });
+        BillboardSquareBuffer->SetPixelTexture({ texturePtr });
         BillboardSquareBuffer->SetMesh(BillboardPoint);
         BillboardSquareBuffer->UseSimulation(false);
         BillboardSquareBuffer->Initialize();

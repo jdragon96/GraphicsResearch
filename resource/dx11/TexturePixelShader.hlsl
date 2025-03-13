@@ -1,11 +1,5 @@
 #include "Common.hlsli"
 
-cbuffer PixelConstBuffer : register(b5)
-{
-  float3 dummy;
-  int mipmapLevel;
-}
-
 Texture2D albedoTexture : register(t0);
 SamplerState g_sampler : register(s0);
 

@@ -124,7 +124,7 @@ public:
     {
       defaultPSO = Dx11GraphicsPSO::MakeShared();
       defaultPSO->SetVertexShader(
-          "../../resource/dx11/BasicVertexShader.hlsl",
+          "../../resource/dx11/HDRVertexShader.hlsl",
           {
               { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
               { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(float) * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -132,24 +132,32 @@ public:
               { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float) * 9, D3D11_INPUT_PER_VERTEX_DATA, 0 },
           },
           std::vector<D3D_SHADER_MACRO>{ { "SKINNED", "0" }, { NULL, NULL } });
-      defaultPSO->SetPixelShader("../../resource/dx11/TexturePixelShader.hlsl");
+      defaultPSO->SetPixelShader("../../resource/dx11/HDRPixelShader.hlsl");
     }
 
     // 3. 매쉬 버퍼 생성하기
     {
       auto StagingTexture = Dx11TextureBuffer::MakeShared();
-      StagingTexture->CreateStagingTexture("../../resource/world.jpg", 0, 1);
+      StagingTexture->CreateStagingTexture("../../resource/RoofingTiles011C_4K-JPG/RoofingTiles011C_4K-JPG_Color.jpg",
+                                           0, 1);
       auto earthTexturePtr = Dx11TextureBuffer::MakeShared();
       earthTexturePtr->CreateMipmapTexture(StagingTexture);
+      auto normalTexturePtr = Dx11TextureBuffer::MakeShared();
+      normalTexturePtr->CreateShaderResourceTexture(
+          "../../resource/RoofingTiles011C_4K-JPG/RoofingTiles011C_4K-JPG_NormalDX.jpg");
+      auto heightTexturePtr = Dx11TextureBuffer::MakeShared();
+      heightTexturePtr->CreateShaderResourceTexture(
+          "../../resource/RoofingTiles011C_4K-JPG/RoofingTiles011C_4K-JPG_Displacement.jpg");
       auto texturePtr = Dx11TextureBuffer::MakeShared();
       texturePtr->LoadDDS("../../resource/skybox.dds");
 
       cubeBuffer = Dx11MeshBuffer<VertexData>::MakeShared();
       cubeBuffer->SetPSO(defaultPSO);
-      cubeBuffer->SetMesh(MakeSphere(Vec3(1, 0, 0), 1.f, 20, 20));
+      cubeBuffer->SetMesh(MakeSphere(Vec3(1, 0, 0), 1.f, 40, 40));
       cubeBuffer->SetObjectType(ObjectType::CHARACTER);
       cubeBuffer->UseSimulation(false);
-      cubeBuffer->SetTexture({ earthTexturePtr, texturePtr });
+      cubeBuffer->SetVertexTexture({ heightTexturePtr });
+      cubeBuffer->SetPixelTexture({ earthTexturePtr, normalTexturePtr });
       cubeBuffer->Initialize();
 
       auto cubemapPSO = Dx11GraphicsPSO::MakeShared();
@@ -170,7 +178,7 @@ public:
       auto bgMesh = MakeSphere(Vec3(0, 0, 0), 100.f, 20, 20);
       // D3D11_CULL_MODE::D3D11_CULL_NONE으로 텍스쳐를 뒤집을 수 있음
       std::reverse(bgMesh.indices.begin(), bgMesh.indices.end());
-      BackgroundBuffer->SetTexture({ texturePtr });
+      BackgroundBuffer->SetPixelTexture({ texturePtr });
       BackgroundBuffer->SetMesh(bgMesh);
       BackgroundBuffer->SetObjectType(ObjectType::CHARACTER);
       BackgroundBuffer->UseSimulation(false);
@@ -201,8 +209,10 @@ public:
     blinnPhongBuffer->m_bufferData.mat.specularFactor = 1.3;
 
     Dx11EngineManager::instance().imguiFunc = [&]() {
-      texturePixelConstBuffer->Show();
+      // texturePixelConstBuffer->Show();
+      GlobalPixelConstBuffer->Show();
       blinnPhongBuffer->Show();
+      commonBuffer->Show();
     };
     Dx11EngineManager::instance().renderFunc = [&]() {
       auto contextPtr = Dx11EngineManager::instance().GetContextPtr();
@@ -213,22 +223,23 @@ public:
       contextPtr->OMSetRenderTargets(1, backbufferRTV.GetAddressOf(), defaultDSV.Get());
       contextPtr->OMSetDepthStencilState(defaultDSS.Get(), 1);
       contextPtr->RSSetState(defaultRS.Get());
+      contextPtr->VSSetSamplers(0, 1, defaultSampler.GetAddressOf());
       contextPtr->PSSetSamplers(0, 1, defaultSampler.GetAddressOf());
 
       // 1. 공유 상수버퍼 갱신
-      // GlobalPixelConstBuffer->m_bufferData.eyeWorld = mainCamera->GetCameraPos();
-      // GlobalPixelConstBuffer->m_bufferData.time += ImGui::GetIO().DeltaTime;
-      // GlobalPixelConstBuffer->Update();
-      // GlobalPixelConstBuffer->Bind();
+      GlobalPixelConstBuffer->m_bufferData.eyeWorld = mainCamera->GetCameraPos();
+      GlobalPixelConstBuffer->m_bufferData.time += ImGui::GetIO().DeltaTime;
+      GlobalPixelConstBuffer->Update();
+      GlobalPixelConstBuffer->Bind();
       commonBuffer->m_bufferData.view       = mainCamera->GetViewMatPtr()->transpose();
       commonBuffer->m_bufferData.projection = mainCamera->GetProjMatPtr()->transpose();
       commonBuffer->Update();
       commonBuffer->Bind();
       blinnPhongBuffer->Update();
       blinnPhongBuffer->Bind();
-      texturePixelConstBuffer->Update();
-      texturePixelConstBuffer->Bind();
-      // 2.
+      // texturePixelConstBuffer->Update();
+      // texturePixelConstBuffer->Bind();
+      //  2.
       BackgroundBuffer->Render();
       cubeBuffer->Render();
     };

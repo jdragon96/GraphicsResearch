@@ -81,9 +81,15 @@ void Dx11MeshBuffer<T>::SetTransform(Mat4 mat)
 }
 
 template <typename T>
-void Dx11MeshBuffer<T>::SetTexture(std::vector<Dx11TextureBuffer::SharedPtr> buffers)
+void Dx11MeshBuffer<T>::SetPixelTexture(std::vector<Dx11TextureBuffer::SharedPtr> buffers)
 {
-  m_textureBuffer = buffers;
+  m_pixelTextureBuffer = buffers;
+}
+
+template <typename T>
+void Dx11MeshBuffer<T>::SetVertexTexture(std::vector<Dx11TextureBuffer::SharedPtr> buffers)
+{
+  m_vertexTextureBuffer = buffers;
 }
 
 template <typename T>
@@ -217,13 +223,21 @@ void Dx11MeshBuffer<T>::Render()
   }
   UINT stride = sizeof(T);
   UINT offset = 0;
-  if (!m_textureBuffer.empty())
+  if (!m_pixelTextureBuffer.empty())
   {
     std::vector<ID3D11ShaderResourceView*> textures;
-    textures.resize(m_textureBuffer.size());
-    for (int index = 0; index < m_textureBuffer.size(); ++index)
-      textures[index] = m_textureBuffer[index]->textureResourceView.Get();
-    contextPtr->PSSetShaderResources(0, m_textureBuffer.size(), textures.data());
+    textures.resize(m_pixelTextureBuffer.size());
+    for (int index = 0; index < m_pixelTextureBuffer.size(); ++index)
+      textures[index] = m_pixelTextureBuffer[index]->textureResourceView.Get();
+    contextPtr->PSSetShaderResources(0, m_pixelTextureBuffer.size(), textures.data());
+  }
+  if (!m_vertexTextureBuffer.empty())
+  {
+    std::vector<ID3D11ShaderResourceView*> textures;
+    textures.resize(m_vertexTextureBuffer.size());
+    for (int index = 0; index < m_vertexTextureBuffer.size(); ++index)
+      textures[index] = m_vertexTextureBuffer[index]->textureResourceView.Get();
+    contextPtr->VSSetShaderResources(0, m_vertexTextureBuffer.size(), textures.data());
   }
   m_constBuffer->Bind();
   contextPtr->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &stride, &offset);

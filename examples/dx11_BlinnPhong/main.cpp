@@ -145,7 +145,7 @@ public:
       cubeBuffer->SetMesh(MakeSphere(Vec3(1, 0, 0), 1.f, 20, 20));
       cubeBuffer->SetObjectType(ObjectType::CHARACTER);
       cubeBuffer->UseSimulation(false);
-      cubeBuffer->SetTexture({ earthTexturePtr, texturePtr });
+      cubeBuffer->SetPixelTexture({ earthTexturePtr, texturePtr });
       cubeBuffer->Initialize();
 
       auto cubemapPSO = Dx11GraphicsPSO::MakeShared();
@@ -166,7 +166,7 @@ public:
       auto bgMesh = MakeSphere(Vec3(0, 0, 0), 100.f, 20, 20);
       // D3D11_CULL_MODE::D3D11_CULL_NONE으로 텍스쳐를 뒤집을 수 있음
       std::reverse(bgMesh.indices.begin(), bgMesh.indices.end());
-      BackgroundBuffer->SetTexture({ texturePtr });
+      BackgroundBuffer->SetPixelTexture({ texturePtr });
       BackgroundBuffer->SetMesh(bgMesh);
       BackgroundBuffer->SetObjectType(ObjectType::CHARACTER);
       BackgroundBuffer->UseSimulation(false);

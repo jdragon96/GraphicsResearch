@@ -41,6 +41,8 @@ cbuffer GlobalConstants : register(b0)
     matrix view;
     matrix proj;
     matrix invWorld;
+    float3 globalVertexDummy1;
+    float heightScale;
     // matrix invViewProj; // Proj -> World
     // matrix invView;
 
@@ -68,6 +70,8 @@ cbuffer GlobalPixelConst : register(b2)
 {
   float3     eyeWorld;
   float      time;
+  float3     globalPixelDummy1;
+  int mipmapLevel;
 }
 
 
