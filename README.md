@@ -33,6 +33,8 @@
 - 빛이 매질에 충돌 시 1) 정반사가 발생하거나 물질 내부로 흡수된다. 
 - 흡수되는 경우, 일부는 분자 단위의 충돌이 발생해 2) 난반사가 일어나거나 3) 감쇠한다.
 
+![PBR Rendering Screenshot](./screenshot/LightTreePNG.png)
+
 ### 1.1. Blinn-Phong
 
 ### 1.2. PBR(Physical-Based Rendering)
