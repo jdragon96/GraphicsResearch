@@ -40,7 +40,7 @@
 ### 1.2. PBR(Physical-Based Rendering)
 - 빛의 현상을 실제 물리법칙에 근거하여 근사 한 것이 BRDF Light(PBR)이다.
 
-<img src="./screenshot/PBR.PNG" width="400" height="300"/>
+<img src="./screenshot/PBR.png" width="400" height="300"/>
 
 #### 1.2.1. BRDF
 #### ⬜ Diffuse BRDF(Lambertian BRDF, 난반사)
