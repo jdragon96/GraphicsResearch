@@ -33,14 +33,14 @@
 - 빛이 매질에 충돌 시 1) 정반사가 발생하거나 물질 내부로 흡수된다. 
 - 흡수되는 경우, 일부는 분자 단위의 충돌이 발생해 2) 난반사가 일어나거나 3) 감쇠한다.
 
-<img src="./screenshot/LightTreePNG.PNG" width="600" height="300"/>
+<img src="./screenshot/LightTreePNG.PNG" />
 
 ### 1.1. Blinn-Phong
 
 ### 1.2. PBR(Physical-Based Rendering)
 - 빛의 현상을 실제 물리법칙에 근거하여 근사 한 것이 BRDF Light(PBR)이다.
 
-<img src="./screenshot/PBR.png" width="400" height="300"/>
+<img src="./screenshot/PBR.png" width="680" height="480"/>
 
 #### 1.2.1. BRDF
 #### ⬜ Diffuse BRDF(Lambertian BRDF, 난반사)
