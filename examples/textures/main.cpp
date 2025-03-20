@@ -11,7 +11,7 @@
 #include "engine/model/CBillboardPoint.h"
 #include "engine/model/CBillboardCube.h"
 #include "engine/model/CGlobalPixel.h"
-#include "CTextures.h"
+#include "engine/model/CTextures.h"
 
 class DrawBlinnPhongRender
 {
@@ -43,7 +43,9 @@ public:
     {
       DXGI_SWAP_CHAIN_DESC scOption;
       ZeroMemory(&scOption, sizeof(scOption));
-      scOption.BufferDesc.Format                  = DXGI_FORMAT_R16G16B16A16_FLOAT;
+      //scOption.BufferDesc.Format                  = DXGI_FORMAT_R16G16B16A16_FLOAT;
+      // MASS 사용 시 float으로 변경
+      scOption.BufferDesc.Format                  = DXGI_FORMAT_R8G8B8A8_UNORM;
       scOption.BufferCount                        = 2;
       scOption.BufferDesc.RefreshRate.Numerator   = 60;
       scOption.BufferDesc.RefreshRate.Denominator = 1;

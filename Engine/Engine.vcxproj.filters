@@ -198,6 +198,9 @@
     <ClInclude Include="include\engine\model\CGlobalPixel.h">
       <Filter>model</Filter>
     </ClInclude>
+    <ClInclude Include="include\engine\model\CTextures.h">
+      <Filter>model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\engine\opengl\glConstantBuffer_inli.h">

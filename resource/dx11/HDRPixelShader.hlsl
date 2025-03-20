@@ -1,71 +1,64 @@
 #include "Common.hlsli"
 #include "BlinnPhong.hlsli"
+#include "PBR.hlsli"
+#include "Math.hlsli"
 
-Texture2D albedoTexture : register(t0);
-Texture2D normalTexture : register(t1);
-Texture2D aoTexture : register(t2);
-SamplerState g_sampler : register(s0);
+static const float3 Fdielectric = 0.04;
 
-float3x3 NormalTransfomrMatrixWithTranslate(float3 axisZ, float3 posWorld) {
-  float3 axisX = normalize(float3(0, axisZ.y, axisZ.z));
-  float l = length(axisX);
-  axisX.x = posWorld.x;
-  if (l < 0.00001) {
-    axisX.y = 1 + posWorld.y;
-    axisX.z = 0 + posWorld.z;
-  } else {
-    axisX.y = -axisX.z / l + posWorld.y;
-    axisX.z = axisX.y / l + posWorld.z;
-  }
-  float3 axisY = normalize(cross(axisZ, axisX));
-  axisY.x += posWorld.x;
-  axisY.y += posWorld.y;
-  axisY.z += posWorld.z;
-  axisZ.x += posWorld.x;
-  axisZ.y += posWorld.y;
-  axisZ.z += posWorld.z;
-  return float3x3(axisX, axisY, axisZ);
-}
-
-float3 GetNormal(float3 normalWorld, float2 texcoord, float3 posWorld)
+cbuffer PBRBuffer : register(b5)
 {
-    // if(useNormalMap)
-    // {
-
-    // }
-    float3 normal = normalTexture.SampleLevel(g_sampler, texcoord, 0.0).rgb;
-    normal = 2.0 * normal - 1.0; // 범위 조절 [-1.0, 1.0]
-    float3x3 TBN = NormalTransfomrMatrixWithTranslate(normalWorld, posWorld);
-    return normalize(mul(normal, TBN));
-    return normalWorld;
+  int      useAlbedoMap;
+  int      useAOMap;
+  int      useMetallicMap;
+  int      useRoughnessMap;
 }
+
+cbuffer PixelConstBuffer : register(b6)
+{
+  Light    light;
+  Material mat;
+  int      useBP;
+  int      useAmbient;
+  int      useDiffuse;
+  int      useTexture;
+}
+
 
 float4 main(PSInput input) : SV_TARGET
 {
   float3 toEye   = normalize(eyeWorld - input.posWorld);
   float3 toLight = normalize(light.position - input.posWorld);
 
-  float3 ambientColor  = float3(0, 0, 0);
-  float3 diffuseColor  = float3(0, 0, 0);
-  float3 specularColor = float3(0, 0, 0);
-  float3 worldNormal = GetNormal(input.normalWorld, input.texcoord, input.posWorld);
+  float3 normTexture = normalTex.Sample(linearSampler, input.texcoord).rgb;
+  float3 worldNormal = NormalFromTexture(normTexture, input.normalWorld, input.posWorld);
 
-  // 1. ambient color
-  if (bool(useAmbient))
-  {
-    ambientColor = mat.ambient * mat.ambientFactor;
-  }
-  // 2. diffuse color
-  if (bool(useDiffuse))
-  {
-    diffuseColor = mat.diffuse * diffuseFactor(toLight, worldNormal);
-  }
-  // 3. specular color
-  if (bool(useBP))
-  {
-    specularColor = mat.specular * mat.specularFactor * BPReflection(toLight, toEye, worldNormal);
-  }
+  float3 albedo = useAlbedoMap ? albedoTex.Sample(linearSampler, input.texcoord).rgb 
+                                : mat.ambient;
+  float ao = useAOMap ? aoTex.SampleLevel(linearSampler, input.texcoord, 0.0).r : 1.0;
+  float metallic = useMetallicMap ? metallicTex.Sample(linearSampler, input.texcoord).r 
+                                  : 1.0;
+  float roughness = useRoughnessMap ? roughnessTex.Sample(linearSampler, input.texcoord).r 
+                                    : 1.0;
+  float3 ambientLighting = AmbientLightingByIBL(albedo, worldNormal, toEye, ao,
+                                                metallic, roughness, Fdielectric);
 
-  float3 color = ambientColor + diffuseColor + specularColor;
-  return float4(color,0) + albedoTexture.SampleLevel(g_sampler, input.texcoord, mipmapLevel); 
+  float3 directLighting = float3(0,0,0);
+  float3 halfWay = normalize(toEye + toLight);
+  float NdotL = max(0.0, dot(worldNormal, toLight));
+  float NdotH = max(0.0, dot(worldNormal, halfWay));
+  float NdotE = max(0.0, dot(worldNormal, toEye));
+
+  float3 F0 = lerp(Fdielectric, albedo, metallic);
+  float3 F = SchlickFresnel(F0, NdotH);
+  float3 kd = lerp(float3(1,1,1) - F, float3(0,0,0), metallic); // 산란광 계산
+  float3 diffuseBRDF = kd * albedo;
+  float D = NdfGGX(NdotH, roughness);
+  float3 G = SchlickGGX(NdotL, NdotE, roughness);
+  float3 specularBRDF = (F * D * G) / max(1e-5, 4.0 * NdotL * NdotE); 
+  // float3 radiance = light[i].radiance * saturate((light[i].fallOffEnd - length(lightVec)) / (light[i].fallOffEnd - light[i].fallOffStart));
+  // directLighting += ((diffuseBRDF + specularBRDF) * 1.0 * NdotL);
+  directLighting += ((diffuseBRDF + specularBRDF));
+
+  return float4(ambientLighting + directLighting, 1);
+  // return float4(color,0) + albedoTexture.SampleLevel(g_sampler, input.texcoord, mipmapLevel); 
 }

@@ -1,6 +1,19 @@
 #ifndef __COMMON_HLSLI__
 #define __COMMON_HLSLI__
 
+TextureCube specularIBLTex : register(t0);
+TextureCube irradianceIBLTex : register(t1);
+
+Texture2D brdfTex : register(t2);
+Texture2D albedoTex : register(t3);
+Texture2D normalTex : register(t4);
+Texture2D aoTex : register(t5);
+Texture2D metallicTex : register(t6);
+Texture2D roughnessTex : register(t7);
+
+SamplerState linearSampler : register(s0);
+SamplerState clampSampler : register(s1);
+
 // #define SKINNED
 
 // Skinned mesh에 대한 변환행렬

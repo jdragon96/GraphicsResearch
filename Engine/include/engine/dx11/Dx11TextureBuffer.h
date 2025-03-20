@@ -114,9 +114,10 @@ public:
     txtDesc.Height               = height;
     txtDesc.MipLevels = txtDesc.ArraySize = 1;
     txtDesc.Format                        = DXGI_FORMAT_R8G8B8A8_UNORM;
-    txtDesc.SampleDesc.Count              = 1;
-    txtDesc.Usage                         = D3D11_USAGE_IMMUTABLE;
-    txtDesc.BindFlags                     = D3D11_BIND_SHADER_RESOURCE;
+    // txtDesc.Format                        = DXGI_FORMAT_R16G16B16A16_FLOAT;
+    txtDesc.SampleDesc.Count = 1;
+    txtDesc.Usage            = D3D11_USAGE_IMMUTABLE;
+    txtDesc.BindFlags        = D3D11_BIND_SHADER_RESOURCE;
 
     // Fill in the subresource data.
     D3D11_SUBRESOURCE_DATA initData;
@@ -128,13 +129,18 @@ public:
     devicePtr->CreateShaderResourceView(texture.Get(), nullptr, textureResourceView.GetAddressOf());
   }
 
-  virtual void LoadDDS(std::string file)
+  virtual void LoadDDS(std::string file, bool isCubemap = true)
   {
     auto texturePath = std::wstring().assign(file.begin(), file.end());
+    UINT miscFlags   = 0;
+    if (isCubemap)
+    {
+      miscFlags |= D3D11_RESOURCE_MISC_TEXTURECUBE;
+    }
     // https://github.com/microsoft/DirectXTK/wiki/DDSTextureLoader
     auto hr = DirectX::CreateDDSTextureFromFileEx(Dx11EngineManager::instance().m_device.Get(), texturePath.c_str(), 0,
                                                   D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0,
-                                                  D3D11_RESOURCE_MISC_TEXTURECUBE,  // Å¥ºê¸Ê¿ë ÅØ½ºÃç
+                                                  miscFlags,  // Å¥ºê¸Ê¿ë ÅØ½ºÃç
                                                   DirectX::DX11::DDS_LOADER_FLAGS(false),
                                                   (ID3D11Resource**)texture.GetAddressOf(),
                                                   textureResourceView.GetAddressOf(), nullptr);

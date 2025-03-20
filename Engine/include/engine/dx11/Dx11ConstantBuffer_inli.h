@@ -94,6 +94,33 @@ void Dx11ConstantBuffer<T>::Bind()
 }
 
 template <typename T>
+void Dx11ConstantBuffer<T>::Bind(int bufferIndex)
+{
+  auto ctxPtr = Dx11EngineManager::instance().GetContextPtr();
+  switch (ConstBufferBase<T>::m_bufferType)
+  {
+    case EConstBufferType::VERTEX_GLOBAL:
+      ctxPtr->VSSetConstantBuffers(bufferIndex, 1, m_constantBuffer.GetAddressOf());
+      break;
+    case EConstBufferType::VERTEX_MODEL:
+      ctxPtr->VSSetConstantBuffers(bufferIndex, 1, m_constantBuffer.GetAddressOf());
+      break;
+    case EConstBufferType::PIXEL_GLOBAL:
+      ctxPtr->PSSetConstantBuffers(bufferIndex, 1, m_constantBuffer.GetAddressOf());
+      break;
+    case EConstBufferType::PIXEL:
+      ctxPtr->PSSetConstantBuffers(bufferIndex, 1, m_constantBuffer.GetAddressOf());
+      break;
+    case EConstBufferType::FILTER:
+      ctxPtr->PSSetConstantBuffers(bufferIndex, 1, m_constantBuffer.GetAddressOf());
+      break;
+    case EConstBufferType::GEOMETRY:
+      ctxPtr->GSSetConstantBuffers(bufferIndex, 1, m_constantBuffer.GetAddressOf());
+      break;
+  }
+}
+
+template <typename T>
 void Dx11ConstantBuffer<T>::Show()
 {
   m_bufferData.Render();

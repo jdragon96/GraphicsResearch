@@ -74,6 +74,7 @@
     <ClInclude Include="include\engine\model\CFilter.h" />
     <ClInclude Include="include\engine\model\CGlobalPixel.h" />
     <ClInclude Include="include\engine\model\CMesh.h" />
+    <ClInclude Include="include\engine\model\CTextures.h" />
     <ClInclude Include="include\engine\model\MeshData.h" />
     <ClInclude Include="include\engine\model\VertexData.h" />
     <ClInclude Include="include\engine\opengl\glConstantBuffer.h" />

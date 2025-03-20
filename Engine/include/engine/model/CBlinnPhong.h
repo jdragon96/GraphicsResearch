@@ -27,8 +27,6 @@ class CBlinnPhong
 public:
 	Light    light;
 	Material mat;
-	//Vec3     eyeWorld;
-	//float    dummy1;
 	int      useBP;
 	int      useAmbient = 0;
   int      useDiffuse = 0;
