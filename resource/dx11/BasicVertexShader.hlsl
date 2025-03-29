@@ -5,6 +5,10 @@ PSInput main(VSInput input)
     PSInput output;
     float4 pos = float4(input.vertexPos, 1.0f);
     pos = mul(pos, world);
+    if(useReflection)
+    {
+        pos = mul(pos, reflection);
+    }
     output.posWorld = pos.xyz;
     pos = mul(pos, view);
     pos = mul(pos, proj);

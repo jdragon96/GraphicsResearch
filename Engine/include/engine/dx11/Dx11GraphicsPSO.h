@@ -36,21 +36,27 @@ public:
   void SetObjectType(EObjectBufferType Type);
   void SetVertexShader(std::string path, std::vector<D3D11_INPUT_ELEMENT_DESC> elements,
                        const std::vector<D3D_SHADER_MACRO> shaderMacros);
+  void SetVertexShaderCode(std::string code, std::vector<D3D11_INPUT_ELEMENT_DESC> elements,
+                       const std::vector<D3D_SHADER_MACRO> shaderMacros);
   void SetPixelShader(std::string path);
+  void SetPixelShaderCode(std::string code);
   void SetGeometryShader(std::string path);
   void SetHullShader(std::string path);
   void SetDomainShader(std::string path);
 
+  void SetComputeShader(std::string path);
+  void SetComputeShaderCode(std::string core);
+
 public:
-  Microsoft::WRL::ComPtr<ID3D11VertexShader>      m_vertexShader;
-  Microsoft::WRL::ComPtr<ID3D11PixelShader>       m_pixelShader;
-  Microsoft::WRL::ComPtr<ID3D11HullShader>        m_hullShader;
-  Microsoft::WRL::ComPtr<ID3D11DomainShader>      m_domainShader;
-  Microsoft::WRL::ComPtr<ID3D11GeometryShader>    m_geometryShader;
-  Microsoft::WRL::ComPtr<ID3D11InputLayout>       m_inputLayout;
-  Microsoft::WRL::ComPtr<ID3D11BlendState>        m_blendState;
-  Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState;
-  Microsoft::WRL::ComPtr<ID3D11RasterizerState>   m_rasterizerState;
+  Microsoft::WRL::ComPtr<ID3D11VertexShader>    m_vertexShader;
+  Microsoft::WRL::ComPtr<ID3D11PixelShader>     m_pixelShader;
+  Microsoft::WRL::ComPtr<ID3D11HullShader>      m_hullShader;
+  Microsoft::WRL::ComPtr<ID3D11DomainShader>    m_domainShader;
+  Microsoft::WRL::ComPtr<ID3D11GeometryShader>  m_geometryShader;
+  Microsoft::WRL::ComPtr<ID3D11ComputeShader>   m_computeShader;
+  Microsoft::WRL::ComPtr<ID3D11InputLayout>     m_inputLayout;
+  Microsoft::WRL::ComPtr<ID3D11BlendState>      m_blendState;
+  Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_rasterizerState;
 
   float m_blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
   UINT  m_stencilRef     = 0;

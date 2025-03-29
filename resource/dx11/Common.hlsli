@@ -66,7 +66,6 @@ cbuffer GlobalConstants : register(b0)
     // float envLodBias = 0.0f; // 환경맵 LodBias
     // float lodBias = 2.0f; // 다른 물체들 LodBias
     // float globalTime;
-    
     // Light lights[MAX_LIGHTS];
 };
 
@@ -75,8 +74,10 @@ cbuffer VertexConstantData: register(b1)
 {
     matrix world;
     matrix worldInv;
+    matrix reflection;
     float scale;
-    float3 dumyy1;
+    int useReflection;
+    float2 vertexConstDummy1;
 }
 
 cbuffer GlobalPixelConst : register(b2)

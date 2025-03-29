@@ -55,6 +55,13 @@ void Dx11MeshBuffer<T>::SetPosition(Vec3 pos)
 }
 
 template <typename T>
+Vec3 Dx11MeshBuffer<T>::GetPosition()
+{
+  return Vec3(m_constBuffer->m_bufferData.world(0, 3), m_constBuffer->m_bufferData.world(1, 3),
+              m_constBuffer->m_bufferData.world(2, 3));
+}
+
+template <typename T>
 inline void Dx11MeshBuffer<T>::SetRotation(float deg)
 {
   double          radians        = deg * 3.141592 / 180.0;
@@ -218,7 +225,8 @@ void Dx11MeshBuffer<T>::Render()
   }
   m_pso->Bind();
   {
-    m_constBuffer->m_bufferData.worldInv = m_constBuffer->m_bufferData.world.inverse();
+    m_constBuffer->m_bufferData.worldInv      = m_constBuffer->m_bufferData.world.inverse();
+    m_constBuffer->m_bufferData.useReflection = 0;
     m_constBuffer->Update();
   }
   UINT stride = sizeof(T);
@@ -243,5 +251,68 @@ void Dx11MeshBuffer<T>::Render()
   contextPtr->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &stride, &offset);
   contextPtr->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
   // contextPtr->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+  contextPtr->DrawIndexed(UINT(m_mesh.indices.size()), 0, 0);
+}
+
+template <typename T>
+void Dx11MeshBuffer<T>::Reflect(Vec3 pos, Vec3 normal)
+{
+  //
+  normal.normalize();
+  float d = pos.dot(normal);
+
+  Mat4 reflectModel;
+  reflectModel(0, 0) = 1.f - 2.f * normal.x() * normal.x();
+  reflectModel(0, 1) = -2.f * normal.x() * normal.y();
+  reflectModel(0, 2) = -2.f * normal.x() * normal.z();
+  reflectModel(0, 3) = 0.f;
+  reflectModel(1, 0) = -2.f * normal.y() * normal.x();
+  reflectModel(1, 1) = 1.f - 2.f * normal.y() * normal.y();
+  reflectModel(1, 2) = -2.f * normal.y() * normal.z();
+  reflectModel(1, 3) = 0.f;
+  reflectModel(2, 0) = -2.f * normal.z() * normal.x();
+  reflectModel(2, 1) = -2.f * normal.z() * normal.y();
+  reflectModel(2, 2) = 1.f - 2.f * normal.z() * normal.z();
+  reflectModel(2, 3) = 0.f;
+  reflectModel(3, 0) = -2.f * d * normal.x();
+  reflectModel(3, 1) = -2.f * d * normal.y();
+  reflectModel(3, 2) = -2.f * d * normal.z();
+  reflectModel(3, 3) = 1.f;
+  reflectModel       = reflectModel.transpose().eval();
+
+  auto contextPtr = Dx11EngineManager::instance().GetContextPtr();
+  if (m_isSimulatedObject && m_rigidDynamic)
+  {
+    auto pos = m_rigidDynamic->getGlobalPose();
+    SetPosition(Vec3(pos.p.x, pos.p.y, pos.p.z));
+  }
+  m_pso->Bind();
+  {
+    m_constBuffer->m_bufferData.worldInv      = m_constBuffer->m_bufferData.world.inverse();
+    m_constBuffer->m_bufferData.reflection    = reflectModel;
+    m_constBuffer->m_bufferData.useReflection = 1;
+    m_constBuffer->Update();
+  }
+  UINT stride = sizeof(T);
+  UINT offset = 0;
+  if (!m_pixelTextureBuffer.empty())
+  {
+    std::vector<ID3D11ShaderResourceView*> textures;
+    textures.resize(m_pixelTextureBuffer.size());
+    for (int index = 0; index < m_pixelTextureBuffer.size(); ++index)
+      textures[index] = m_pixelTextureBuffer[index]->textureResourceView.Get();
+    contextPtr->PSSetShaderResources(0, m_pixelTextureBuffer.size(), textures.data());
+  }
+  if (!m_vertexTextureBuffer.empty())
+  {
+    std::vector<ID3D11ShaderResourceView*> textures;
+    textures.resize(m_vertexTextureBuffer.size());
+    for (int index = 0; index < m_vertexTextureBuffer.size(); ++index)
+      textures[index] = m_vertexTextureBuffer[index]->textureResourceView.Get();
+    contextPtr->VSSetShaderResources(0, m_vertexTextureBuffer.size(), textures.data());
+  }
+  m_constBuffer->Bind();
+  contextPtr->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &stride, &offset);
+  contextPtr->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
   contextPtr->DrawIndexed(UINT(m_mesh.indices.size()), 0, 0);
 }

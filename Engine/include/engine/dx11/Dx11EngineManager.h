@@ -389,6 +389,11 @@ public:
     m_device->CreateSamplerState(&sampDesc, samplerBuffer.GetAddressOf());
   }
 
+  Microsoft::WRL::ComPtr<ID3D11Texture2D> GetBackBufferTexture()
+  {
+    return m_backBufferTexture;
+  }
+
   // texture 처리
 
   MySimulationEventCallback      simulationCallback;
@@ -421,6 +426,7 @@ public:
   D3D11_DEPTH_STENCIL_DESC dssOption;
   D3D11_SAMPLER_DESC       samplerOption;
 
+  Microsoft::WRL::ComPtr<ID3D11Texture2D>         m_backBufferTexture;
   Microsoft::WRL::ComPtr<ID3D11Device>            m_device;
   Microsoft::WRL::ComPtr<ID3D11DeviceContext>     m_context;
   Microsoft::WRL::ComPtr<IDXGISwapChain>          m_swapChain;

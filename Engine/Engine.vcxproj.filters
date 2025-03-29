@@ -48,9 +48,6 @@
     <ClCompile Include="include\engine\common\ResourceUtils.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="include\engine\dx11\Dx11StructuredBuffer.cpp">
-      <Filter>dx11</Filter>
-    </ClCompile>
     <ClCompile Include="include\engine\model\AnimationData.cpp">
       <Filter>model</Filter>
     </ClCompile>
@@ -87,6 +84,18 @@
     <ClCompile Include="include\engine\model\CGlobalPixel.cpp">
       <Filter>model</Filter>
     </ClCompile>
+    <ClCompile Include="include\engine\dx11\Dx11EnginePSO.cpp">
+      <Filter>dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\dx11\Dx11ComputeBuffer.cpp">
+      <Filter>dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\interface\TextureBufferBase.cpp">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="include\engine\dx11\Dx11StructedBuffer_inli.h">
+      <Filter>dx11</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\engine\dx11\Dx11ConstantBuffer.h">
@@ -108,9 +117,6 @@
       <Filter>dx11</Filter>
     </ClInclude>
     <ClInclude Include="include\engine\dx11\Dx11MeshBuffer_inli.h">
-      <Filter>dx11</Filter>
-    </ClInclude>
-    <ClInclude Include="include\engine\dx11\Dx11StructuredBuffer.h">
       <Filter>dx11</Filter>
     </ClInclude>
     <ClInclude Include="include\engine\dx11\Dx11TextureBuffer.h">
@@ -200,6 +206,15 @@
     </ClInclude>
     <ClInclude Include="include\engine\model\CTextures.h">
       <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\dx11\Dx11EnginePSO.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\dx11\Dx11ComputeBuffer.h">
+      <Filter>dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\dx11\Dx11StructedBuffer.h">
+      <Filter>dx11</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

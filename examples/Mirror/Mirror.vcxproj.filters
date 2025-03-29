@@ -3,4 +3,8 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CCubemap.h" />
+    <ClInclude Include="CPBRPixel.h" />
+  </ItemGroup>
 </Project>

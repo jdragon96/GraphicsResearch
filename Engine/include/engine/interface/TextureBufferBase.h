@@ -2,9 +2,8 @@
 
 #include <string>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
-class TextureBufferBase {
+class TextureBufferBase
+{
 public:
+  unsigned char* ReadImage(std::string filePath, int* x, int* y, int* comp, int req_comp);
 };

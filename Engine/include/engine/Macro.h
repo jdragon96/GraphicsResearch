@@ -72,11 +72,13 @@ enum class EConstBufferType
   PIXEL,
   VERTEX_GLOBAL,
   VERTEX_MODEL,
-  FILTER
+  FILTER,
+  COMPUTE
 };
 
 enum class EObjectBufferType
 {
+  POINTLIST,
   POINT,
   TRIANGLE,
 };

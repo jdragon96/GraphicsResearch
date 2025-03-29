@@ -81,6 +81,9 @@ void Dx11ConstantBuffer<T>::Bind()
     case EConstBufferType::PIXEL_GLOBAL:
       ctxPtr->PSSetConstantBuffers(2, 1, m_constantBuffer.GetAddressOf());
       break;
+    case EConstBufferType::COMPUTE:
+      ctxPtr->CSSetConstantBuffers(3, 1, m_constantBuffer.GetAddressOf());
+      break;
     case EConstBufferType::PIXEL:
       ctxPtr->PSSetConstantBuffers(5, 1, m_constantBuffer.GetAddressOf());
       break;
@@ -116,6 +119,9 @@ void Dx11ConstantBuffer<T>::Bind(int bufferIndex)
       break;
     case EConstBufferType::GEOMETRY:
       ctxPtr->GSSetConstantBuffers(bufferIndex, 1, m_constantBuffer.GetAddressOf());
+      break;
+    case EConstBufferType::COMPUTE:
+      ctxPtr->CSSetConstantBuffers(bufferIndex, 1, m_constantBuffer.GetAddressOf());
       break;
   }
 }

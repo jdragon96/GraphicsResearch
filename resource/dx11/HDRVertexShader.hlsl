@@ -20,6 +20,10 @@ PSInput main(VSInput input)
 
     // 기타
     pos = mul(pos, world);
+    if(useReflection)
+    {
+        pos = mul(pos, reflection);
+    }
     output.posWorld = pos.xyz;
     pos = mul(pos, view);
     pos = mul(pos, proj);

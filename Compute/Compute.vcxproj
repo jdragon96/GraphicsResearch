@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{10ed8ea3-92e7-43a2-a1a2-0d8119fcc59a}</ProjectGuid>
-    <RootNamespace>textures</RootNamespace>
+    <ProjectGuid>{489c6278-2f85-40bb-89c5-b2379010b444}</ProjectGuid>
+    <RootNamespace>Compute</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -134,7 +134,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Blur.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="Particle.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Blur.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

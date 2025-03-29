@@ -41,6 +41,8 @@ public:
 
   void SetPosition(Vec3 pos);
 
+  Vec3 GetPosition();
+
   void SetRotation(float angle);
 
   void SetTransform(Mat4 pos);
@@ -52,6 +54,8 @@ public:
   void SetVertexTexture(std::vector<Dx11TextureBuffer::SharedPtr> buffer);
 
   void Render();
+
+  void Reflect(Vec3 pos, Vec3 normal);
 
   MeshData<T>                               m_mesh;
   Dx11GraphicsPSO::SharedPtr                m_pso;

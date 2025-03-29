@@ -149,11 +149,10 @@ void Dx11EngineManager::Initialize()
   InitDeviceAndSwapChain(scOption);
   {
     // 백버퍼 랜더타겟
-    Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
-    Check(m_swapChain->GetBuffer(0, IID_PPV_ARGS(&backBuffer)));
-    Check(m_device->CreateRenderTargetView(backBuffer.Get(), nullptr, m_backBufferRTV.GetAddressOf()));
+    Check(m_swapChain->GetBuffer(0, IID_PPV_ARGS(&m_backBufferTexture)));
+    Check(m_device->CreateRenderTargetView(m_backBufferTexture.Get(), nullptr, m_backBufferRTV.GetAddressOf()));
     D3D11_TEXTURE2D_DESC desc;
-    backBuffer->GetDesc(&desc);
+    m_backBufferTexture->GetDesc(&desc);
     desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
     // 이전 프레임 저장용
     // Check(m_device->CreateTexture2D(&desc, nullptr, m_prevBuffer.GetAddressOf()));
