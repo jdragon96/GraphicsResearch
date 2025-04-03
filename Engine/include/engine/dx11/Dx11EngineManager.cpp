@@ -13,6 +13,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
   int  zDelta;
   auto bType = Dx11EngineManager::instance().WhichButtonPressed();
+
   switch (msg)
   {
     case WM_SIZE:
@@ -56,8 +57,8 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
       return 0;
   }
 
-  // g_appBase�� �̿��ؼ� ���������� ��� �Լ� ȣ��
-  // return g_appBase->MsgProc(hWnd, msg, wParam, lParam);
+  Dx11EngineManager::instance().m_currentPosX = LOWORD(lParam);
+  Dx11EngineManager::instance().m_currentPosY = HIWORD(lParam);
   return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 

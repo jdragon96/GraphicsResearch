@@ -32,15 +32,17 @@ public:
   void operator=(const Dx11GraphicsPSO& pso);
   void SetBlendFactor(const float blendFactor[4]);
   void Bind();
+  void RenderCompute(int GroupX, int GroupY, int GroupZ);
 
   void SetObjectType(EObjectBufferType Type);
   void SetVertexShader(std::string path, std::vector<D3D11_INPUT_ELEMENT_DESC> elements,
                        const std::vector<D3D_SHADER_MACRO> shaderMacros);
   void SetVertexShaderCode(std::string code, std::vector<D3D11_INPUT_ELEMENT_DESC> elements,
-                       const std::vector<D3D_SHADER_MACRO> shaderMacros);
+                           const std::vector<D3D_SHADER_MACRO> shaderMacros);
   void SetPixelShader(std::string path);
   void SetPixelShaderCode(std::string code);
   void SetGeometryShader(std::string path);
+  void SetGeometryShaderCode(std::string code);
   void SetHullShader(std::string path);
   void SetDomainShader(std::string path);
 

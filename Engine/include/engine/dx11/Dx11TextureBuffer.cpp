@@ -159,3 +159,25 @@ void Dx11TextureBuffer::CopyFrom(Dx11ComputeBuffer::SharedPtr uav)
   auto contextPtr = Dx11EngineManager::instance().GetContextPtr();
   contextPtr->CopyResource(texture.Get(), uav->m_2dTexture.Get());
 }
+
+void Dx11TextureBuffer::CreateUATexture(int height, int width, const DXGI_FORMAT pixelFormat)
+{
+  D3D11_TEXTURE2D_DESC txtDesc;
+  ZeroMemory(&txtDesc, sizeof(txtDesc));
+  txtDesc.Width            = width;
+  txtDesc.Height           = height;
+  txtDesc.MipLevels        = 1;
+  txtDesc.ArraySize        = 1;
+  txtDesc.Format           = pixelFormat;  // 주로 FLOAT 사용
+  txtDesc.SampleDesc.Count = 1;
+  txtDesc.Usage            = D3D11_USAGE_DEFAULT;
+  txtDesc.BindFlags        = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_UNORDERED_ACCESS;
+  txtDesc.MiscFlags        = 0;
+  txtDesc.CPUAccessFlags   = 0;
+
+  auto device = Dx11EngineManager::instance().GetDevicePtr();
+  Dx11EngineManager::Check(device->CreateTexture2D(&txtDesc, NULL, texture.GetAddressOf()));
+  Dx11EngineManager::Check(device->CreateRenderTargetView(texture.Get(), NULL, textureRTV.GetAddressOf()));
+  Dx11EngineManager::Check(device->CreateShaderResourceView(texture.Get(), NULL, textureResourceView.GetAddressOf()));
+  Dx11EngineManager::Check(device->CreateUnorderedAccessView(texture.Get(), NULL, textureUAV.GetAddressOf()));
+}

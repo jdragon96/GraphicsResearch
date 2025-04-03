@@ -37,6 +37,8 @@ public:
 
   void Bind(int bufferIndex);
 
+  void BindAll(int bufferIndex);
+
   void Show();
 
   Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;

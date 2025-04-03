@@ -92,6 +92,7 @@ void Dx11GraphicsPSO::Bind()
   else
     contextPtr->GSSetShader(nullptr, 0, 0);
 
+  // ㅇㅇㅇ
   if (m_computeShader)
     contextPtr->CSSetShader(this->m_computeShader.Get(), 0, 0);
   else
@@ -155,6 +156,11 @@ void Dx11GraphicsPSO::SetPixelShaderCode(std::string code)
 }
 void Dx11GraphicsPSO::SetGeometryShader(std::string path)
 {
+  std::string code = ReadFile(path);
+  SetGeometryShaderCode(code);
+}
+void Dx11GraphicsPSO::SetGeometryShaderCode(std::string code)
+{
   auto devicePtr = Dx11EngineManager::instance().GetDevicePtr();
 
   Microsoft::WRL::ComPtr<ID3DBlob> shaderBlob;
@@ -163,7 +169,6 @@ void Dx11GraphicsPSO::SetGeometryShader(std::string path)
 #if defined(DEBUG) || defined(_DEBUG)
   compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
-  std::string code = ReadFile(path);
 
   // 주의: 쉐이더의 시작점의 이름이 "main"인 함수로 지정
   IncludeHandler includeHandler;
@@ -237,4 +242,9 @@ void Dx11GraphicsPSO::SetComputeShaderCode(std::string code)
   hr = devicePtr->CreateComputeShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL,
                                       &this->m_computeShader);
   Dx11EngineManager::Check(hr);
+}
+void Dx11GraphicsPSO::RenderCompute(int GroupX, int GroupY, int GroupZ)
+{
+  auto contextPtr = Dx11EngineManager::instance().GetContextPtr();
+  contextPtr->Dispatch(GroupX, GroupY, GroupZ);
 }

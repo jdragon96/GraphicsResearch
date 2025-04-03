@@ -394,6 +394,20 @@ public:
     return m_backBufferTexture;
   }
 
+  static void BarriorCompute()
+  {
+    auto contextPtr = Dx11EngineManager::instance().GetContextPtr();
+
+    ID3D11ShaderResourceView* nullSRV[6] = {
+      0,
+    };
+    contextPtr->CSSetShaderResources(0, 6, nullSRV);
+    ID3D11UnorderedAccessView* nullUAV[6] = {
+      0,
+    };
+    contextPtr->CSSetUnorderedAccessViews(0, 6, nullUAV, NULL);
+  }
+
   // texture 처리
 
   MySimulationEventCallback      simulationCallback;
@@ -437,6 +451,9 @@ public:
   Microsoft::WRL::ComPtr<ID3D11RasterizerState>   m_mainRS;
   Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_mainDepthState;
   Microsoft::WRL::ComPtr<ID3D11SamplerState>      m_mainSamplerState;
+
+  // float m_mousePosX;
+  // float m_mousePosY;
 
   // bool            isMousePressedFlag;
   // MouseButtonType whichButtonTypePressed;

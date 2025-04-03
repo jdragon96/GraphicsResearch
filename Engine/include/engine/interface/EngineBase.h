@@ -22,6 +22,11 @@ public:
   std::function<void()> imguiFunc          = []() {};
 
   RendererOption m_screenOption;
+  bool           m_isMousePressed = false;
+  float          m_prevPosX       = -1.f;
+  float          m_prevPosY       = -1.f;
+  float          m_currentPosX    = -1.f;
+  float          m_currentPosY    = -1.f;
 
 protected:
   CameraBuffer::SharedPtr m_camPtr;
@@ -29,8 +34,5 @@ protected:
   /// <summary>
   /// 마우스 이벤트 처리
   /// </summary>
-  MouseButtonType m_buttonType     = MouseButtonType::NONE;
-  bool            m_isMousePressed = false;
-  float           m_prevPosX       = -1.f;
-  float           m_prevPosY       = -1.f;
+  MouseButtonType m_buttonType = MouseButtonType::NONE;
 };

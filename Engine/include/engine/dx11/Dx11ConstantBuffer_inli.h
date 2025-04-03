@@ -131,3 +131,13 @@ void Dx11ConstantBuffer<T>::Show()
 {
   m_bufferData.Render();
 }
+
+template <typename T>
+void Dx11ConstantBuffer<T>::BindAll(int bufferIndex)
+{
+  auto ctxPtr = Dx11EngineManager::instance().GetContextPtr();
+  ctxPtr->VSSetConstantBuffers(bufferIndex, 1, m_constantBuffer.GetAddressOf());
+  ctxPtr->PSSetConstantBuffers(bufferIndex, 1, m_constantBuffer.GetAddressOf());
+  ctxPtr->GSSetConstantBuffers(bufferIndex, 1, m_constantBuffer.GetAddressOf());
+  ctxPtr->CSSetConstantBuffers(bufferIndex, 1, m_constantBuffer.GetAddressOf());
+}

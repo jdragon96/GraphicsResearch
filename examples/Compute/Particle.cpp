@@ -56,12 +56,12 @@ void ParticleExample()
   GPUData->Initialize(512, 512);
 
   ShaderPSO = Dx11GraphicsPSO::MakeShared();
-  ShaderPSO->SetVertexShader("../resource/dx11/StructedBufferVertexShader.hlsl",
+  ShaderPSO->SetVertexShader("../../resource/dx11/StructedBufferVertexShader.hlsl",
                              {
                                  { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
                              },
                              {});
-  ShaderPSO->SetPixelShader("../resource/dx11/StructedBufferPixelShader.hlsl");
+  ShaderPSO->SetPixelShader("../../resource/dx11/StructedBufferPixelShader.hlsl");
   ShaderPSO->SetComputeShaderCode(R"(
 struct Particle
 {
@@ -90,12 +90,12 @@ void main(int3 gID : SV_GroupID, int3 gtID : SV_GroupThreadID, uint3 dtID : SV_D
     )");
   // circleComputePSO->SetComputeShader("../resource/dx11/CreateCircleComputeShader.hlsl");
 
-  auto                  ParticleBuffer = Dx11StructedBuffer<Particle>::MakeShared();
-  std::vector<Particle> particles;
-  particles.resize(25600);
+  auto                                  ParticleBuffer = Dx11StructedBuffer<Particle>::MakeShared();
+  std::vector<Particle>                 particles;
   std::mt19937                          gen(0);
   std::uniform_real_distribution<float> dp(-1.0f, 1.0f);
   std::uniform_real_distribution<float> dc(0.1f, 1.0f);
+  particles.resize(25600);
   for (auto& p : particles)
   {
     p.Position = Vec3(dp(gen), dp(gen), 1.0f);
@@ -104,7 +104,6 @@ void main(int3 gID : SV_GroupID, int3 gtID : SV_GroupThreadID, uint3 dtID : SV_D
   ParticleBuffer->Initialize(particles);
 
   D3D11_VIEWPORT m_screenViewport;
-
   Dx11EnginePSO::instance();
   Dx11EngineManager::instance().InitImGui();
   Dx11EngineManager::instance().imguiFunc  = [&]() {};
