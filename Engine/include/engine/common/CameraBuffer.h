@@ -56,6 +56,10 @@ public:
 
   Mat4* GetProjMatPtr();
 
+  Mat4 GetViewMatPtrT();
+
+  Mat4 GetProjMatPtrT();
+
   Mat4* GetVP();
 
   Vec3 GetCameraPos();

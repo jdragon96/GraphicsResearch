@@ -14,12 +14,12 @@ Dx11ConstantBuffer<T>::Dx11ConstantBuffer() : ConstBufferBase<T>()
 template <typename T>
 void Dx11ConstantBuffer<T>::Initialize(EConstBufferType Type)
 {
-  assert((sizeof(m_bufferData) % 16) == 0);
+  assert((sizeof(ConstBufferBase<T>::m_bufferData) % 16) == 0);
   auto devPtr                      = Dx11EngineManager::instance().GetDevicePtr();
   ConstBufferBase<T>::m_bufferType = Type;
 
   D3D11_BUFFER_DESC cbDesc;
-  cbDesc.ByteWidth           = sizeof(m_bufferData);
+  cbDesc.ByteWidth           = sizeof(this->m_bufferData);
   cbDesc.Usage               = D3D11_USAGE_DYNAMIC;
   cbDesc.BindFlags           = D3D11_BIND_CONSTANT_BUFFER;
   cbDesc.CPUAccessFlags      = D3D11_CPU_ACCESS_WRITE;
@@ -28,7 +28,7 @@ void Dx11ConstantBuffer<T>::Initialize(EConstBufferType Type)
 
   // Fill in the subresource data.
   D3D11_SUBRESOURCE_DATA InitData;
-  InitData.pSysMem          = &m_bufferData;
+  InitData.pSysMem          = &this->m_bufferData;
   InitData.SysMemPitch      = 0;
   InitData.SysMemSlicePitch = 0;
   const HRESULT hr          = devPtr->CreateBuffer(&cbDesc, &InitData, m_constantBuffer.GetAddressOf());
@@ -129,7 +129,7 @@ void Dx11ConstantBuffer<T>::Bind(int bufferIndex)
 template <typename T>
 void Dx11ConstantBuffer<T>::Show()
 {
-  m_bufferData.Render();
+  ConstBufferBase<T>::m_bufferData.Render();
 }
 
 template <typename T>

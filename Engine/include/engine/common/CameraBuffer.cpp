@@ -89,10 +89,17 @@ Mat4* CameraBuffer::GetProjMatPtr()
 {
   return &m_projMatrix;
 }
-
 Vec3 CameraBuffer::GetCameraPos()
 {
   return m_camPosition;
+}
+Mat4 CameraBuffer::GetViewMatPtrT()
+{
+  return m_viewMatrix.transpose();
+}
+Mat4 CameraBuffer::GetProjMatPtrT()
+{
+  return m_projMatrix.transpose();
 }
 Vec3 CameraBuffer::GetUpVector()
 {

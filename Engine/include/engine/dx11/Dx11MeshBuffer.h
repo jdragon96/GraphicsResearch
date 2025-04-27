@@ -3,12 +3,13 @@
 #include <vector>
 
 #include "engine/Macro.h"
+#include "engine/interface/MeshBufferBase.h"
 #include "engine/model/MeshData.h"
+#include "engine/model/CMesh.h"
 #include "engine/dx11/Dx11GraphicsPSO.h"
 #include "engine/dx11/Dx11EngineManager.h"
 #include "engine/dx11/Dx11ConstantBuffer.h"
 #include "engine/dx11/Dx11TextureBuffer.h"
-#include "engine/model/CMesh.h"
 
 // �׻� b1�� �Է¹ޱ�
 
@@ -20,7 +21,7 @@ enum class ObjectType
 };
 
 template <typename T>
-class Dx11MeshBuffer
+class Dx11MeshBuffer : public MeshBufferBase<T>
 {
 public:
   SHARED_PTR(Dx11MeshBuffer);
@@ -57,9 +58,9 @@ public:
 
   void Reflect(Vec3 pos, Vec3 normal);
 
-  MeshData<T>                               m_mesh;
-  Dx11GraphicsPSO::SharedPtr                m_pso;
-  Dx11ConstantBuffer<CMesh>::SharedPtr      m_constBuffer;
+  // MeshData<T>                               m_mesh;
+  Dx11GraphicsPSO::SharedPtr m_pso;
+  // Dx11ConstantBuffer<CMesh>::SharedPtr      m_constBuffer;
   std::vector<Dx11TextureBuffer::SharedPtr> m_pixelTextureBuffer;
   std::vector<Dx11TextureBuffer::SharedPtr> m_vertexTextureBuffer;
 

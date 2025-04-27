@@ -24,9 +24,9 @@ void Dx11MeshBuffer<T>::SetPxTransform(physx::PxTransform t)
   {
     m_rigidDynamic->setGlobalPose(t);
   }
-  m_constBuffer->m_bufferData.world(0, 3) = t.p.x;
-  m_constBuffer->m_bufferData.world(1, 3) = t.p.y;
-  m_constBuffer->m_bufferData.world(2, 3) = t.p.z;
+  this->m_constBuffer->m_bufferData.world(0, 3) = t.p.x;
+  this->m_constBuffer->m_bufferData.world(1, 3) = t.p.y;
+  this->m_constBuffer->m_bufferData.world(2, 3) = t.p.z;
 }
 
 template <typename T>
@@ -49,16 +49,16 @@ void Dx11MeshBuffer<T>::SetPosition(Vec3 pos)
     physx::PxTransform localTm(physx::PxVec3(pos.x(), pos.y(), pos.z()));
     m_rigidDynamic->setGlobalPose(localTm);
   }
-  m_constBuffer->m_bufferData.world(0, 3) = pos.x();
-  m_constBuffer->m_bufferData.world(1, 3) = pos.y();
-  m_constBuffer->m_bufferData.world(2, 3) = pos.z();
+  this->m_constBuffer->m_bufferData.world(0, 3) = pos.x();
+  this->m_constBuffer->m_bufferData.world(1, 3) = pos.y();
+  this->m_constBuffer->m_bufferData.world(2, 3) = pos.z();
 }
 
 template <typename T>
 Vec3 Dx11MeshBuffer<T>::GetPosition()
 {
-  return Vec3(m_constBuffer->m_bufferData.world(0, 3), m_constBuffer->m_bufferData.world(1, 3),
-              m_constBuffer->m_bufferData.world(2, 3));
+  return Vec3(this->m_constBuffer->m_bufferData.world(0, 3), this->m_constBuffer->m_bufferData.world(1, 3),
+              this->m_constBuffer->m_bufferData.world(2, 3));
 }
 
 template <typename T>
@@ -66,7 +66,7 @@ inline void Dx11MeshBuffer<T>::SetRotation(float deg)
 {
   double          radians        = deg * 3.141592 / 180.0;
   Eigen::Matrix3f rotationMatrix = Eigen::AngleAxisf(radians, Eigen::Vector3f::UnitY()).toRotationMatrix();
-  m_constBuffer->m_bufferData.world.block<3, 3>(0, 0) = rotationMatrix;
+  this->m_constBuffer->m_bufferData.world.block<3, 3>(0, 0) = rotationMatrix;
 }
 
 template <typename T>
@@ -78,13 +78,13 @@ void Dx11MeshBuffer<T>::SetPSO(Dx11GraphicsPSO::SharedPtr pso)
 template <typename T>
 void Dx11MeshBuffer<T>::SetMesh(MeshData<T> mesh)
 {
-  m_mesh = mesh;
+  this->m_mesh = mesh;
 }
 
 template <typename T>
 void Dx11MeshBuffer<T>::SetTransform(Mat4 mat)
 {
-  m_constBuffer->m_bufferData.world = mat;
+  this->m_constBuffer->m_bufferData.world = mat;
 }
 
 template <typename T>
@@ -108,13 +108,13 @@ void Dx11MeshBuffer<T>::Initialize()
   D3D11_BUFFER_DESC bufferDesc;
   ZeroMemory(&bufferDesc, sizeof(bufferDesc));
   bufferDesc.Usage               = D3D11_USAGE::D3D11_USAGE_IMMUTABLE;
-  bufferDesc.ByteWidth           = UINT(sizeof(T) * m_mesh.vertices.size());
+  bufferDesc.ByteWidth           = UINT(sizeof(T) * this->m_mesh.vertices.size());
   bufferDesc.BindFlags           = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
   bufferDesc.CPUAccessFlags      = 0;
   bufferDesc.StructureByteStride = sizeof(T);
 
   D3D11_SUBRESOURCE_DATA vertexBufferData = { 0 };
-  vertexBufferData.pSysMem                = m_mesh.vertices.data();
+  vertexBufferData.pSysMem                = this->m_mesh.vertices.data();
   vertexBufferData.SysMemPitch            = 0;
   vertexBufferData.SysMemSlicePitch       = 0;
 
@@ -127,13 +127,13 @@ void Dx11MeshBuffer<T>::Initialize()
   // 2. Index buffer 생성
   D3D11_BUFFER_DESC indexBufferDesc   = {};
   indexBufferDesc.Usage               = D3D11_USAGE::D3D11_USAGE_IMMUTABLE;  // 초기화 후 변경X
-  indexBufferDesc.ByteWidth           = UINT(sizeof(uint32_t) * m_mesh.indices.size());
+  indexBufferDesc.ByteWidth           = UINT(sizeof(uint32_t) * this->m_mesh.indices.size());
   indexBufferDesc.BindFlags           = D3D11_BIND_FLAG::D3D11_BIND_INDEX_BUFFER;
   indexBufferDesc.CPUAccessFlags      = 0;  // 0 if no CPU access is necessary.
   indexBufferDesc.StructureByteStride = sizeof(uint32_t);
 
   D3D11_SUBRESOURCE_DATA indexBufferData = { 0 };
-  indexBufferData.pSysMem                = m_mesh.indices.data();
+  indexBufferData.pSysMem                = this->m_mesh.indices.data();
   indexBufferData.SysMemPitch            = 0;
   indexBufferData.SysMemSlicePitch       = 0;
   const HRESULT IndexHr = devPtr->CreateBuffer(&indexBufferDesc, &indexBufferData, m_indexBuffer.GetAddressOf());
@@ -144,16 +144,16 @@ void Dx11MeshBuffer<T>::Initialize()
 
   // 3. Meshbuffer Const buffer 초기화
   {
-    m_constBuffer = Dx11ConstantBuffer<CMesh>::MakeShared();
-    m_constBuffer->m_bufferData.world.setIdentity();
-    m_constBuffer->m_bufferData.worldInv.setIdentity();
-    m_constBuffer->Initialize(EConstBufferType::VERTEX_MODEL);
+    this->m_constBuffer = Dx11ConstantBuffer<CMesh>::MakeShared();
+    this->m_constBuffer->m_bufferData.world.setIdentity();
+    this->m_constBuffer->m_bufferData.worldInv.setIdentity();
+    this->m_constBuffer->Initialize(EConstBufferType::VERTEX_MODEL);
   }
   // 4. BBox 생성하기
   {
     bboxMax = Vec3(-1000, -1000, -1000);
     bboxMin = Vec3(1000, 1000, 1000);
-    for (auto& vertex : m_mesh.vertices)
+    for (auto& vertex : this->m_mesh.vertices)
     {
       if (vertex.x >= bboxMax.x())
         bboxMax[0] = vertex.x;
@@ -225,9 +225,9 @@ void Dx11MeshBuffer<T>::Render()
   }
   m_pso->Bind();
   {
-    m_constBuffer->m_bufferData.worldInv      = m_constBuffer->m_bufferData.world.inverse();
-    m_constBuffer->m_bufferData.useReflection = 0;
-    m_constBuffer->Update();
+    this->m_constBuffer->m_bufferData.worldInv      = this->m_constBuffer->m_bufferData.world.inverse();
+    this->m_constBuffer->m_bufferData.useReflection = 0;
+    this->m_constBuffer->Update();
   }
   UINT stride = sizeof(T);
   UINT offset = 0;
@@ -247,11 +247,11 @@ void Dx11MeshBuffer<T>::Render()
       textures[index] = m_vertexTextureBuffer[index]->textureResourceView.Get();
     contextPtr->VSSetShaderResources(0, m_vertexTextureBuffer.size(), textures.data());
   }
-  m_constBuffer->Bind();
+  this->m_constBuffer->Bind();
   contextPtr->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &stride, &offset);
   contextPtr->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
   // contextPtr->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-  contextPtr->DrawIndexed(UINT(m_mesh.indices.size()), 0, 0);
+  contextPtr->DrawIndexed(UINT(this->m_mesh.indices.size()), 0, 0);
 }
 
 template <typename T>
@@ -288,10 +288,10 @@ void Dx11MeshBuffer<T>::Reflect(Vec3 pos, Vec3 normal)
   }
   m_pso->Bind();
   {
-    m_constBuffer->m_bufferData.worldInv      = m_constBuffer->m_bufferData.world.inverse();
-    m_constBuffer->m_bufferData.reflection    = reflectModel;
-    m_constBuffer->m_bufferData.useReflection = 1;
-    m_constBuffer->Update();
+    this->m_constBuffer->m_bufferData.worldInv      = this->m_constBuffer->m_bufferData.world.inverse();
+    this->m_constBuffer->m_bufferData.reflection = reflectModel;
+    this->m_constBuffer->m_bufferData.useReflection = 1;
+    this->m_constBuffer->Update();
   }
   UINT stride = sizeof(T);
   UINT offset = 0;
@@ -311,8 +311,8 @@ void Dx11MeshBuffer<T>::Reflect(Vec3 pos, Vec3 normal)
       textures[index] = m_vertexTextureBuffer[index]->textureResourceView.Get();
     contextPtr->VSSetShaderResources(0, m_vertexTextureBuffer.size(), textures.data());
   }
-  m_constBuffer->Bind();
+  this->m_constBuffer->Bind();
   contextPtr->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &stride, &offset);
   contextPtr->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-  contextPtr->DrawIndexed(UINT(m_mesh.indices.size()), 0, 0);
+  contextPtr->DrawIndexed(UINT(ConstBufferBase<T>::m_mesh.indices.size()), 0, 0);
 }

@@ -42,8 +42,6 @@ public:
   void Show();
 
   Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
-
-  T m_bufferData;
 };
 
 #include "engine/dx11/Dx11ConstantBuffer_inli.h"

@@ -23,6 +23,7 @@
     <ClCompile Include="include\engine\common\Drawing.cpp" />
     <ClCompile Include="include\engine\common\EigenUtils.cpp" />
     <ClCompile Include="include\engine\common\FBXLoader.cpp" />
+    <ClCompile Include="include\engine\common\Ray.cpp" />
     <ClCompile Include="include\engine\common\ResourceUtils.cpp" />
     <ClCompile Include="include\engine\common\SystemUtils.cpp" />
     <ClCompile Include="include\engine\dx11\Dx11ComputeBuffer.cpp" />
@@ -51,6 +52,7 @@
     <ClInclude Include="include\engine\common\Drawing.h" />
     <ClInclude Include="include\engine\common\EigenUtils.h" />
     <ClInclude Include="include\engine\common\FBXLoader.h" />
+    <ClInclude Include="include\engine\common\Ray.h" />
     <ClInclude Include="include\engine\common\ResourceUtils.h" />
     <ClInclude Include="include\engine\common\SystemUtils.h" />
     <ClInclude Include="include\engine\dx11\Dx11ConstantBuffer.h" />

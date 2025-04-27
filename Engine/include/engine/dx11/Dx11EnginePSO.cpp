@@ -167,6 +167,13 @@ void Dx11EnginePSO::EnableSampler()
   contextPtr->VSSetSamplers(0, 1, m_linearSampler.GetAddressOf());
   contextPtr->CSSetSamplers(0, 1, m_linearSampler.GetAddressOf());
 }
+void Dx11EnginePSO::EnableLinearSampler(int index)
+{
+  auto contextPtr = Dx11EngineManager::instance().GetContextPtr();
+  contextPtr->PSSetSamplers(index, 1, m_linearSampler.GetAddressOf());
+  contextPtr->VSSetSamplers(index, 1, m_linearSampler.GetAddressOf());
+  contextPtr->CSSetSamplers(index, 1, m_linearSampler.GetAddressOf());
+}
 Microsoft::WRL::ComPtr<ID3D11DepthStencilView> Dx11EnginePSO::GetDefaultDSV()
 {
   return m_depthStencilView;

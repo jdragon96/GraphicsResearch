@@ -41,6 +41,8 @@ public:
 
   void EnableSampler();
 
+  void EnableLinearSampler(int index);
+
   Microsoft::WRL::ComPtr<ID3D11DepthStencilView> GetDefaultDSV();
 
 private:
