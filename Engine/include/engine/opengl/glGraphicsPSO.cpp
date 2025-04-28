@@ -7,6 +7,10 @@ glGraphicsPSO::glGraphicsPSO() : PipelineObjectBase()
 
 glGraphicsPSO::~glGraphicsPSO()
 {
+  if (ID)
+  {
+    glDeleteProgram(ID);
+  }
 }
 
 void glGraphicsPSO::Bind()
@@ -22,10 +26,18 @@ void glGraphicsPSO::SetVertexShader(std::string path)
 {
   InitVertexShader(ReadFile(path));
 }
+void glGraphicsPSO::SetVertexShaderCode(std::string code)
+{
+  InitVertexShader(code);
+}
 
 void glGraphicsPSO::SetFragmentShader(std::string path)
 {
   InitPixelShader(ReadFile(path));
+}
+void glGraphicsPSO::SetFragmentShaderCode(std::string code)
+{
+  InitPixelShader(code);
 }
 
 void glGraphicsPSO::Initialize()

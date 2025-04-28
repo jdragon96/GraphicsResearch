@@ -11,7 +11,7 @@ template <typename T>
 void glConstantBuffer<T>::Initialize(EConstBufferType Type)
 {
   ConstBufferBase<T>::m_bufferType = type;
-  this->m_constbufferBindingPoint = 0;
+  this->m_constbufferBindingPoint  = 0;
   switch (Type)
   {
     case EConstBufferType::VERTEX_GLOBAL:

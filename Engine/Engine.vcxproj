@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\engine\common\AABB.cpp" />
     <ClCompile Include="include\engine\common\CameraBuffer.cpp" />
     <ClCompile Include="include\engine\common\Drawing.cpp" />
     <ClCompile Include="include\engine\common\EigenUtils.cpp" />
@@ -48,6 +49,7 @@
     <ClCompile Include="include\engine\opengl\glEngineManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\engine\common\AABB.h" />
     <ClInclude Include="include\engine\common\CameraBuffer.h" />
     <ClInclude Include="include\engine\common\Drawing.h" />
     <ClInclude Include="include\engine\common\EigenUtils.h" />

@@ -31,13 +31,12 @@ public:
   unsigned int ID;
 
   void SetVertexShader(std::string path);
+  void SetVertexShaderCode(std::string code);
+
   void SetFragmentShader(std::string path);
+  void SetFragmentShaderCode(std::string code);
 
 protected:
-  //virtual void InitVertexConstBuffer();
-  //virtual void InitPixelConstBuffer();
-  //virtual void InitGeometryConstBuffer();
-  //virtual void InitComputeConstBuffer();
   virtual void InitVertexShader(std::string);
   virtual void InitPixelShader(std::string);
   virtual void InitGeometryShader(std::string);

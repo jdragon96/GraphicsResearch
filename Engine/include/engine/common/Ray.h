@@ -7,11 +7,15 @@
 #include "engine/interface/MeshBufferBase.h"
 #include "engine/model/VertexData.h"
 #include "engine/common/CameraBuffer.h"
+#include "engine/common/AABB.h"
 
 class IRay
 {
 public:
   virtual void Trace(MeshBufferBase<VertexData>::SharedPtr mesh, bool isCCW = true)
+  {
+  }
+  virtual void Trace(AABB::SharedPtr aabb)
   {
   }
   virtual void UpdateRay(CameraBuffer::SharedPtr cam, Vec2 cursor, double width, double height)
@@ -35,6 +39,7 @@ public:
 
   virtual void UpdateRay(CameraBuffer::SharedPtr cam, Vec2 cursor, double width, double height) override;
   virtual void Trace(MeshBufferBase<VertexData>::SharedPtr mesh, bool isCCW = true) override;
+  virtual void Trace(AABB::SharedPtr aabb) override;
   virtual bool MoveTracePos(MeshBufferBase<VertexData>::SharedPtr mesh) override;
 
 private:

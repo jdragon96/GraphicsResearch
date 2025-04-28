@@ -99,6 +99,9 @@
     <ClCompile Include="include\engine\common\Ray.cpp">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="include\engine\common\AABB.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\engine\dx11\Dx11ConstantBuffer.h">
@@ -220,6 +223,9 @@
       <Filter>dx11</Filter>
     </ClInclude>
     <ClInclude Include="include\engine\common\Ray.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\common\AABB.h">
       <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>

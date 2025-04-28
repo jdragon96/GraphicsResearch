@@ -64,6 +64,70 @@ void Ray::Trace(MeshBufferBase<VertexData>::SharedPtr meshBuffer, bool isCCW)
     m_distance = shortestDistance;
   }
 }
+void Ray::Trace(AABB::SharedPtr aabb)
+{
+  m_distance   = std::numeric_limits<float>::infinity();
+  m_traceState = false;
+
+  double t_min = 0.0;  // 광선 시작점부터
+  double t_max = std::numeric_limits<double>::infinity();
+
+  // 각 축에 대해 슬랩 교차 계산
+  for (int i = 0; i < 3; ++i)
+  {
+    if (std::abs(m_rayDirection[i]) < 1e-6)
+    {
+      // 방향이 축에 평행 → 원점이 AABB 범위 내인지 확인
+      if (m_rayPos[i] < aabb->m_min[i] || m_rayPos[i] > aabb->m_max[i])
+      {
+        return;  // 범위 밖 → 교차 불가
+      }
+      continue;  // 범위 내 → 이 축은 항상 교차
+    }
+
+    // 슬랩 교차 파라미터 계산
+    double t1 = (aabb->m_min[i] - m_rayPos[i]) / m_rayDirection[i];
+    double t2 = (aabb->m_max[i] - m_rayPos[i]) / m_rayDirection[i];
+
+    // 입구/출구 결정
+    double t_near = std::min(t1, t2);
+    double t_far  = std::max(t1, t2);
+
+    // 교차 구간 갱신
+    t_min = std::max(t_min, t_near);
+    t_max = std::min(t_max, t_far);
+  }
+
+  // 교차 조건 확인
+  if (t_min <= t_max && t_min >= 0)
+  {
+    m_traceState = true;
+    m_distance   = static_cast<float>(t_min);
+  }
+
+  //double shortestDistance = std::numeric_limits<double>::infinity();
+  //m_distance              = std::numeric_limits<float>::infinity();
+  //m_traceState            = false;
+
+  //double t_x_min = (aabb->m_min.x() - m_rayPos.x()) / m_rayDirection.x();
+  //double t_x_max = (aabb->m_max.x() - m_rayPos.x()) / m_rayDirection.x();
+  //double t_y_min = (aabb->m_min.y() - m_rayPos.y()) / m_rayDirection.y();
+  //double t_y_max = (aabb->m_max.y() - m_rayPos.y()) / m_rayDirection.y();
+  //double t_z_min = (aabb->m_min.z() - m_rayPos.z()) / m_rayDirection.z();
+  //double t_z_max = (aabb->m_max.z() - m_rayPos.z()) / m_rayDirection.z();
+
+  //auto mins = { t_x_min, t_y_min, t_z_min };
+  //auto maxs = { t_x_max, t_y_max, t_z_max };
+
+  //auto entry = std::max_element(mins.begin(), mins.end());
+  //auto exit  = std::min_element(maxs.begin(), maxs.end());
+
+  //if ((*entry > *exit) || (*entry < 0))
+  //  return;
+
+  //m_traceState = true;
+  //m_distance   = *entry;
+}
 std::optional<double> Ray::IntersectionTriangle(VertexData* p0, VertexData* p1, VertexData* p2)
 {
   if (!p0 || !p1 || !p2)
